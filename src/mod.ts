@@ -1,5 +1,6 @@
 import {UnitCompiler} from '@ddu6/stc'
 import {STDN, STDNUnit} from 'stdn'
+import {a as oa} from '@ddu6/cfr'
 const slides:SVGElement[]=[]
 let index=0
 addEventListener('keydown',e=>{
@@ -96,9 +97,9 @@ export function stdnToInlinePlainString(stdn:STDN){
     }
     return string
 }
-export type SliceIndexes=(true|undefined)[]
-export function parseSliceIndexesStr(string:string){
-    const array:SliceIndexes=[]
+export type SlideIndexes=(true|undefined)[]
+export function parseSlideIndexesStr(string:string){
+    const array:SlideIndexes=[]
     for(const item of string.trim().split(/\s+/)){
         if(/^\d+-$/.test(item)){
             array[Number(item.slice(0,-1))-1]=true
@@ -129,11 +130,11 @@ export function parseSliceIndexesStr(string:string){
     }
     return array
 }
-export function parseSliceIndexesStrs(strings:string[]){
+export function parseSlideIndexesStrs(strings:string[]){
     if(strings.length===0){
         return []
     }
-    const out=strings.map(parseSliceIndexesStr)
+    const out=strings.map(parseSlideIndexesStr)
     const length=Math.max(...out.map(val=>val.length))
     if(length===0){
         return []
@@ -148,14 +149,14 @@ export function parseSliceIndexesStrs(strings:string[]){
     }
     return out
 }
-export function parseSlicesStr(string:string){
+export function parseSlideStr(string:string){
     const classStrs:string[]=[]
     const indexStrs:string[]=[]
     for(const [,classStr,indexStr] of string.matchAll(/((?:\^?-?[_a-zA-Z]+[_a-zA-Z0-9-]*\s+)*)([0-9-][0-9-\s]*)(?:\s+|$)/g)){
         classStrs.push(classStr)
         indexStrs.push(indexStr)
     }
-    const indexesArray=parseSliceIndexesStrs(indexStrs)
+    const indexesArray=parseSlideIndexesStrs(indexStrs)
     if(indexesArray.length===0){
         return []
     }
@@ -190,18 +191,18 @@ export function parseSlicesStr(string:string){
     }
     return classesArray.map(val=>val.join(' '))
 }
-export interface SliceableElement {
+export interface SlidableElement {
     element:Element
     classArray:string[]
 }
-export function extractSliceableElements(parent:Element){
-    const out:SliceableElement[]=[]
-    for(const element of parent.querySelectorAll('[data-slice]')){
-        const string=element.getAttribute('data-slice')
+export function extractSlidableElements(parent:Element){
+    const out:SlidableElement[]=[]
+    for(const element of parent.querySelectorAll('[data-slide]')){
+        const string=element.getAttribute('data-slide')
         if(string===null){
             continue
         }
-        const classArray=parseSlicesStr(string)
+        const classArray=parseSlideStr(string)
         if(classArray.length>0){
             out.push({
                 element,
@@ -244,7 +245,7 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
     page++
     const element=document.createElement('div')
     for(let i=0;;i++){
-        const slice=document.createElementNS('http://www.w3.org/2000/svg','svg')
+        const slide=document.createElementNS('http://www.w3.org/2000/svg','svg')
         const fo=document.createElementNS('http://www.w3.org/2000/svg','foreignObject')
         const container=document.createElement('div')
         const main=document.createElement('main')
@@ -253,8 +254,8 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         const titleEle=document.createElement('div')
         const dateEle=document.createElement('div')
         const pageEle=document.createElement('div')
-        element.append(slice)
-        slice.append(fo)
+        element.append(slide)
+        slide.append(fo)
         fo.append(container)
         container.append(main)
         container.append(footer)
@@ -263,8 +264,8 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         footer.append(titleEle)
         footer.append(dateEle)
         footer.append(pageEle)
-        slides.push(slice)
-        slice.setAttribute('viewBox','0 0 1920 1080')
+        slides.push(slide)
+        slide.setAttribute('viewBox','0 0 1920 1080')
         fo.setAttribute('width','100%')
         fo.setAttribute('height','100%')
         authorEle.textContent=author
@@ -272,7 +273,7 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         dateEle.textContent=date
         pageEle.textContent=page.toString()
         let more=false
-        for(const {element,classArray} of extractSliceableElements(main)){
+        for(const {element,classArray} of extractSlidableElements(main)){
             if(i<classArray.length-1){
                 more=true
             }
@@ -290,6 +291,33 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
     }
     return element
 }
+export function jumpTo(id:string){
+    const target=document.querySelector(`[id=${JSON.stringify(id)}]`)
+    if(target===null){
+        return
+    }
+    const slide=target.closest('.unit.frame>svg')
+    if(slide===null){
+        return
+    }
+    slide.scrollIntoView()
+}
+export const a:UnitCompiler=async (unit,compiler)=>{
+    const {href}=unit.options
+    if(typeof href!=='string'||!href.startsWith('#')){
+        return await oa(unit,compiler)
+    }
+    const element=document.createElement('a')
+    const id=decodeURIComponent(href.slice(1))
+    if(id.length>0){
+        element.addEventListener('click',e=>{
+            e.preventDefault()
+            jumpTo(id)
+        })
+    }
+    element.append(await compiler.compileInlineSTDN(unit.children))
+    return element
+}
 export const outline:UnitCompiler=async (unit,compiler)=>{
     const pause=unit.options.pause===true
     const ul=document.createElement('ul')
@@ -302,6 +330,9 @@ export const outline:UnitCompiler=async (unit,compiler)=>{
         }
         const li=document.createElement('li')
         li.append(await compiler.compileSTDN(indexInfo.unit.children))
+        li.addEventListener('click',()=>{
+            jumpTo(indexInfo.id)
+        })
         if(indexInfo.index.length===2){
             sul.append(li)
             continue
@@ -311,7 +342,7 @@ export const outline:UnitCompiler=async (unit,compiler)=>{
         ul.append(sul)
         count++
         if(pause&&count>1){
-            sul.dataset.slice=li.dataset.slice=`${count}-`
+            sul.dataset.slide=li.dataset.slide=`${count}-`
         }
     }
     return ul

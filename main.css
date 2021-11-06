@@ -97,3 +97,8 @@ body>.lr-struct>main>article {
     gap: var(--length-gap);
     justify-content: center;
 }
+
+.unit.frame .unit.outline>li,
+.unit.frame .unit.outline>ul>li {
+    cursor: pointer;
+}

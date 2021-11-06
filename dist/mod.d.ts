@@ -4,14 +4,16 @@ export declare function findUnit(tag: string, stdn: STDN): STDNUnit | undefined;
 export declare function findUnits(tag: string, stdn: STDN): STDNUnit[];
 export declare function unitToInlinePlainString(unit: STDNUnit): string;
 export declare function stdnToInlinePlainString(stdn: STDN): string;
-export declare type SliceIndexes = (true | undefined)[];
-export declare function parseSliceIndexesStr(string: string): SliceIndexes;
-export declare function parseSliceIndexesStrs(strings: string[]): SliceIndexes[];
-export declare function parseSlicesStr(string: string): string[];
-export interface SliceableElement {
+export declare type SlideIndexes = (true | undefined)[];
+export declare function parseSlideIndexesStr(string: string): SlideIndexes;
+export declare function parseSlideIndexesStrs(strings: string[]): SlideIndexes[];
+export declare function parseSlideStr(string: string): string[];
+export interface SlidableElement {
     element: Element;
     classArray: string[];
 }
-export declare function extractSliceableElements(parent: Element): SliceableElement[];
+export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare const frame: UnitCompiler;
+export declare function jumpTo(id: string): void;
+export declare const a: UnitCompiler;
 export declare const outline: UnitCompiler;
