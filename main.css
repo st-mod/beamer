@@ -81,6 +81,10 @@ body>.lr-struct>main>article {
     right: 0;
 }
 
+.unit.frame a.no-color {
+    color: inherit;
+}
+
 .unit.frame address {
     font-size: var(--length-font-log);
 }
@@ -101,4 +105,9 @@ body>.lr-struct>main>article {
 .unit.frame .unit.outline>li,
 .unit.frame .unit.outline>ul>li {
     cursor: pointer;
+}
+
+.unit.frame .unit.outline>li:hover,
+.unit.frame .unit.outline>ul>li:hover {
+    text-decoration: underline;
 }

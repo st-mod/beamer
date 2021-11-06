@@ -310,6 +310,8 @@ export const a:UnitCompiler=async (unit,compiler)=>{
     const element=document.createElement('a')
     const id=decodeURIComponent(href.slice(1))
     if(id.length>0){
+        element.href=''
+        element.classList.add('no-color')
         element.addEventListener('click',e=>{
             e.preventDefault()
             jumpTo(id)
