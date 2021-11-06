@@ -42,15 +42,22 @@ export function normalize(){
         }
     }
 }
+let showing=false
 export function show(){
     for(let i=0;i<slides.length;i++){
         const {top,height}=slides[i].getBoundingClientRect()
         if(top+height/2>=0){
             document.documentElement.classList.add('showing')
             go(i)
+            showing=true
             break
         }
     }
+}
+export function exit(){
+    showing=false
+    document.documentElement.classList.remove('showing')
+    go(index)
 }
 export function listen(){
     addEventListener('keydown',e=>{
@@ -61,11 +68,11 @@ export function listen(){
             show()
             return
         }
-        if(!document.documentElement.classList.contains('showing')){
+        if(!showing){
             return
         }
         if(e.key==='Escape'){
-            document.documentElement.classList.remove('showing')
+            exit()
             return
         }
         if(e.key==='ArrowUp'||e.key==='PageUp'){
@@ -90,7 +97,7 @@ export function listen(){
         }
     })
     addEventListener('scroll',()=>{
-        if(document.documentElement.classList.contains('showing')){
+        if(showing){
             normalize()
         }
     })

@@ -7,6 +7,7 @@ export declare function left(): void;
 export declare function right(): void;
 export declare function normalize(): void;
 export declare function show(): void;
+export declare function exit(): void;
 export declare function listen(): void;
 export declare function findUnit(tag: string, stdn: STDN): STDNUnit | undefined;
 export declare function findUnits(tag: string, stdn: STDN): STDNUnit[];
