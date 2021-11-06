@@ -4,10 +4,10 @@ import {a as oa} from '@ddu6/cfr'
 const slides:SVGElement[]=[]
 let index=0
 const history:(number|undefined)[]=[]
-let historyIndex=0
+let historyIndex=-1
 function go(newIndex:number){
-    history[historyIndex]=index=newIndex
-    history[++historyIndex]=undefined
+    history[++historyIndex]=index=newIndex
+    history[historyIndex+1]=undefined
     slides[index].scrollIntoView()
 }
 function up(){
