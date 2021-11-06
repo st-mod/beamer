@@ -5,7 +5,7 @@ const history = [];
 let historyIndex = 0;
 function go(newIndex) {
     history[historyIndex] = index = newIndex;
-    history[historyIndex + 1] = undefined;
+    history[++historyIndex] = undefined;
     slides[index].scrollIntoView();
 }
 function up() {
