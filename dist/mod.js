@@ -1,3 +1,4 @@
+import { replaceAnchors } from 'st-std';
 const slides = [];
 let index = 0;
 const history = [];
@@ -341,22 +342,6 @@ export const frame = async (unit, compiler) => {
     }
     return element;
 };
-export function jumpTo(id) {
-    const target = document.querySelector(`[id=${JSON.stringify(id)}]`);
-    if (target === null) {
-        return;
-    }
-    const slide = target.closest('.unit.frame>svg');
-    if (slide === null) {
-        return;
-    }
-    for (let i = 0; i < slides.length; i++) {
-        if (slides[i] === slide) {
-            go(i);
-            break;
-        }
-    }
-}
 export const outline = async (unit, compiler) => {
     const pause = unit.options.pause === true;
     const ul = document.createElement('ul');
@@ -368,10 +353,10 @@ export const outline = async (unit, compiler) => {
             continue;
         }
         const li = document.createElement('li');
-        li.append(await compiler.compileSTDN(indexInfo.unit.children));
-        li.addEventListener('click', () => {
-            jumpTo(indexInfo.id);
-        });
+        const a = document.createElement('a');
+        li.append(a);
+        a.append(replaceAnchors(await compiler.compileSTDN(indexInfo.unit.children)));
+        a.href = `#${encodeURIComponent(indexInfo.id)}`;
         if (indexInfo.index.length === 2) {
             sul.append(li);
             continue;

@@ -98,12 +98,7 @@ body>.lr-struct>main>article {
     justify-content: center;
 }
 
-.unit.frame .unit.outline>li,
-.unit.frame .unit.outline>ul>li {
-    cursor: pointer;
-}
-
-.unit.frame .unit.outline>li:hover,
-.unit.frame .unit.outline>ul>li:hover {
-    text-decoration: underline;
+.unit.frame .unit.outline>li>a,
+.unit.frame .unit.outline>ul>li>a {
+    display: block;
 }

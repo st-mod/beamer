@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@ddu6/stc": "^0.2.23",
+    "st-std": "^0.2.36",
     "stdn": "^0.2.3"
   },
   "engines": {

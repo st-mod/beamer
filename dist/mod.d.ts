@@ -22,5 +22,4 @@ export interface SlidableElement {
 }
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare const frame: UnitCompiler;
-export declare function jumpTo(id: string): void;
 export declare const outline: UnitCompiler;
