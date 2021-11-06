@@ -34,7 +34,7 @@ export function right() {
 export function normalize() {
     for (let i = 0; i < slides.length; i++) {
         const { bottom } = slides[i].getBoundingClientRect();
-        if (bottom > 0) {
+        if (bottom > 1) {
             go(i);
             break;
         }
@@ -44,8 +44,8 @@ export function show() {
     for (let i = 0; i < slides.length; i++) {
         const { top, height } = slides[i].getBoundingClientRect();
         if (top + height / 2 >= 0) {
-            go(i);
             document.documentElement.classList.add('showing');
+            go(i);
             break;
         }
     }
