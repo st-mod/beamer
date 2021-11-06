@@ -292,7 +292,13 @@ export function jumpTo(id) {
     if (slide === null) {
         return;
     }
-    slide.scrollIntoView();
+    for (let i = 0; i < slides.length; i++) {
+        if (slides[i] === slide) {
+            index = i;
+            slide.scrollIntoView();
+            break;
+        }
+    }
 }
 export const a = async (unit, compiler) => {
     const { href } = unit.options;
