@@ -28,8 +28,8 @@
     {abbr 'ISPN \'80', date [27th International Symposium of Prime Numbers (-280)]}
 ]}
 {frame [
-    {id outline, h1 [Outline]}
-    {outline []}
+    {h1 [Outline]}
+    {pause, outline []}
 ]}
 {class vcenter, frame [
     //

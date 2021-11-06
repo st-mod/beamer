@@ -14,3 +14,4 @@ export interface SliceableElement {
 }
 export declare function extractSliceableElements(parent: Element): SliceableElement[];
 export declare const frame: UnitCompiler;
+export declare const outline: UnitCompiler;

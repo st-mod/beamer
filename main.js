@@ -1,1 +1,1 @@
-export {frame} from './mod.js'
+export {frame,outline} from './mod.js'

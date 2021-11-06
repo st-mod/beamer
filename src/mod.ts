@@ -290,3 +290,29 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
     }
     return element
 }
+export const outline:UnitCompiler=async (unit,compiler)=>{
+    const pause=unit.options.pause===true
+    const ul=document.createElement('ul')
+    let sul=document.createElement('ul')
+    ul.append(sul)
+    let count=0
+    for(const indexInfo of compiler.context.indexInfoArray){
+        if(indexInfo.realOrbit!=='heading'||indexInfo.index.length>2){
+            continue
+        }
+        const li=document.createElement('li')
+        li.append(await compiler.compileSTDN(indexInfo.unit.children))
+        if(indexInfo.index.length===2){
+            sul.append(li)
+            continue
+        }
+        sul=document.createElement('ul')
+        ul.append(li)
+        ul.append(sul)
+        count++
+        if(pause&&count>1){
+            sul.dataset.slice=li.dataset.slice=`${count}-`
+        }
+    }
+    return ul
+}
