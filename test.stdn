@@ -1,0 +1,125 @@
+{css-src test.css, ucs-src main.js, global []}
+{global, orbit heading, h1 []}
+{global, orbit heading, level 2, h2 []}
+{class vcenter, frame [
+    {abbr No Largest Prime, title [There Is No Largest Prime Number]}
+    {display [With an introduction to a new proof technique]}
+    []
+    {authors [
+        {abbr Euclid (Alexandria), author [
+            Euclid of Alexandria
+            []
+            {address [
+                {email [euclid@alexandria.edu]}
+                Department of Mathematics
+                University of Alexandria
+            ]}
+        ]}
+        {abbr DDU (ST), author [
+            DDU
+            []
+            {address [
+                {email [ddu6@protonmail.com]}
+                Simple Text Organization
+            ]}
+        ]}
+    ]}
+    []
+    {abbr 'ISPN \'80', date [27th International Symposium of Prime Numbers (-280)]}
+]}
+{frame [
+    {id outline, h1 [Outline]}
+    {outline []}
+]}
+{class vcenter, frame [
+    //
+    {id motivation, h1 [Motivation]}
+]}
+{frame [
+    {id what-are-prime-numbers, h2 [What Are Prime Numbers?]}
+    {id prime, definition [
+        //
+        ['A '{i [prime number]}' is a number that has exactly two divisors.']
+    ]}
+    []
+    {id eg-prime, example [{ul [
+        {li [2 is prime (two divisors: 1 and 2).]}
+        {slice ^hide 2-, li [3 is prime (two divisors: 1 and 3).]}
+        {slice ^hide 3-, li [[4 is not prime (, {b [three]}' divisors: 1, 2, and 4).']]}
+    ]}]}
+]}
+{class vcenter, frame [
+    //
+    {id results, h1 [Results]}
+]}
+{frame [
+    {id proof-of-the-main-theorem, h2 [Proof of the Main Theorem]}
+    {id main, theorem [There is no largest prime number.]}
+    {class no-qed, proof [{ul [
+        {slice warn 1, li [['Suppose '{'p'}' were the largest prime number.']]}
+        {slice 2-, li [['Let '{'q'}' be the product of the first '{'p'}' numbers.']]}
+        {slice 3-, li [['Then '{'q+1'}' is not divisible by any of them.']]}
+        {li [['But '{'q+1'}' is '{slice ^hide 4-, span [['greater than '{'1'}', thus ']]}'divisible by some prime number not in the first '{'p'}' numbers.'{slice 4-, qed []}]]}
+    ]}]}
+    []
+    {slice 5-, div [['The proof used '{i [reductio ad absurdum]}.]]}
+]}
+{class vcenter, frame [
+    //
+    {id whats-more, h1 ['What\'s More']}
+]}
+{frame [
+    {id whats-still-to-do, h2 ['What\'s Still To Do?']}
+    {two [
+        {dl [
+            {dt [Answered Questions]}
+            {dd [How many primes are there?]}
+        ]}
+        {dl [
+            {dt [Open Questions]}
+            {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id Goldbach1742, ref []})]]}
+        ]}
+    ]}
+    []
+    {id Goldbach1742, orbit letter, block, index [
+        //
+        ['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']
+    ]}
+]}
+{global, '\def\Re#1{\operatorname{Re}\left(#1\right)}'}
+{frame [
+    {id another-open-question, h2 [Another Open Question]}
+    ['In complex plane, define '{'\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}'}'. Then, are all zeros of '{'\zeta'}' in the strip '{'0\leq\Re{s}\leq1'}' lie on the line '{'\Re{s}=\frac12'}?]
+    []
+    {slice 2-, div [
+        {h4 [Some Observation]}
+        ['If '{'\Re{s}>1'}{slice 3-, span [', then']}]
+    ]}
+    {slice 3-, align [
+        ['\zeta(s)&=\sum_{n=1}^\infty\frac1{n^s}'\\]
+        '&\htmlData{slice=4-}{=\prod_p\frac1{1-p^{-s}}.}'
+    ]}
+    {slice 5-, div [['Thus '{'\zeta'}' does not vanish when '{'\Re{s}>1'}.]]}
+]}
+{global, vsce cpp, code []}
+{frame [
+    {id an-algorithm-for-finding-primes-numbers, h2 [An Algorithm For Finding Primes Numbers]}
+    {lang cpp, slice c1 1 c2 2 c3 3 c4 4-, code [
+        'int main (){'
+        '    std::vector<bool> is_prime (100, true);'
+        '    for (int i = 2; i < 100; i++){'
+        '        if (is_prime[i]){'
+        '            std::cout << i << " ";'
+        '            for (int j = i; j < 100; is_prime [j] = false, j+=i);'
+        '        }'
+        '    }'
+        '    return 0;'
+        '}'
+    ]}
+    []
+    {slice 4-, div [['Note the use of '{code [std::]}.]]}
+]}
+{class vcenter, frame [
+    //
+    {h1 [Thanks]}
+]}

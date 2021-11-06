@@ -1,0 +1,99 @@
+html {
+    --length-width: 100%;
+}
+
+html.showing {
+    overflow: hidden;
+}
+
+body>.lr-struct>aside:not(.active) {
+    display: none;
+}
+
+body>.lr-struct>button {
+    display: block;
+}
+
+html.showing>body>.lr-struct>button {
+    display: none;
+}
+
+body>.lr-struct>main {
+    margin-left: 0 !important;
+}
+
+body>.lr-struct>main>article {
+    padding: 0;
+}
+
+.unit.frame>svg {
+    display: block;
+    font-size: 32px;
+    margin: var(--length-padding) 0;
+    width: 100%;
+}
+
+.unit.frame>svg>foreignObject>div {
+    display: grid;
+    grid-template-rows: 0 1fr 0 min-content;
+    height: 1080px;
+}
+
+.unit.frame.vcenter>svg>foreignObject>div {
+    grid-template-rows: 1fr auto 1fr min-content;
+}
+
+.unit.frame>svg>foreignObject>div>* {
+    overflow: hidden;
+}
+
+.unit.frame>svg>foreignObject>div>main {
+    grid-area: 2/1/span 1/span 1;
+    padding: 0 var(--length-padding);
+}
+
+.unit.frame>svg>foreignObject>div>footer {
+    display: grid;
+    grid-area: 4/1/span 1/span 1;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.unit.frame>svg>foreignObject>div>footer>div {
+    font-size: var(--length-font-circle);
+    text-align: center;
+}
+
+.unit.frame>svg>foreignObject>div>footer>div:first-child {
+    background: var(--color-slice);
+}
+
+.unit.frame>svg>foreignObject>div>footer>div:nth-child(2) {
+    background: var(--color-selection);
+}
+
+.unit.frame>svg>foreignObject>div>footer>div:nth-child(3) {
+    background: var(--color-slice);
+}
+
+.unit.frame>svg>foreignObject>div>footer>div:last-child {
+    position: absolute;
+    margin-right: var(--length-padding);
+    right: 0;
+}
+
+.unit.frame address {
+    font-size: var(--length-font-log);
+}
+
+.unit.frame .unit.author,
+.unit.frame .unit.date,
+.unit.frame address {
+    text-align: center;
+}
+
+.unit.frame .unit.authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--length-gap);
+    justify-content: center;
+}

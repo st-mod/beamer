@@ -1,0 +1,159 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+
+\def\Re#1{\operatorname{Re}\left(#1\right)}
+
+\title[No Largest Prime]{There Is No Largest Prime Number}
+\subtitle{With an introduction to a new proof technique}
+
+\author[Euclid, DDU]{
+    Euclid of Alexandria\inst{1}
+    \and
+    DDU\inst{2}
+}
+\institute[Alexandria, ST]{
+    \inst{1}
+    \texttt{euclid@alexandria.edu}\\
+    Department of Mathematics\\
+    University of Alexandria
+    \and
+    \inst{2}
+    \texttt{ddu6@protonmail.com}\\
+    Simple Text Orgnazition
+}
+\date[ISPN '80]{27th International Symposium of Prime Numbers, --280}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[pausesections]
+\end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\section{Motivation}
+
+\subsection{What Are Prime Numbers?}
+
+\begin{frame}
+    \frametitle{What Are Prime Numbers?}
+
+    \begin{definition}
+        A \alert{prime number} is a number that has exactly two divisors.
+    \end{definition}
+
+    \begin{example}
+        \begin{itemize}
+            \item 2 is prime (two divisors: 1 and 2).
+            \pause
+            \item 3 is prime (two divisors: 1 and 3).
+            \pause
+            \item 4 is not prime (\alert{three} divisors: 1, 2, and 4).
+        \end{itemize}
+    \end{example}
+\end{frame}
+
+\section{Results}
+
+\subsection{Proof of the Main Theorem}
+
+\begin{frame}
+    \frametitle{Proof of the Main Theorem}
+    \framesubtitle{The proof uses \textit{reductio ad absurdum}}
+
+    \begin{theorem}
+        There is no largest prime number.
+    \end{theorem}
+
+    \begin{proof}
+        \begin{enumerate}
+            \item<1-| alert@1> Suppose $p$ were the largest prime number.
+            \item<2-> Let $q$ be the product of the first $p$ numbers.
+            \item<3-> Then $q + 1$ is not divisible by any of them.
+            \item<1-> But $q + 1$ is \only<4->{greater than $1$, thus }divisible by some prime number not in the first $p$ numbers.\qedhere
+        \end{enumerate}
+    \end{proof}
+
+    \uncover<5->{The proof used \textit{reductio ad absurdum}.}
+\end{frame}
+
+\section{What's More}
+
+\subsection{What's Still To Do?}
+
+\begin{frame}
+    \frametitle{What's Still To Do?}
+
+    \begin{columns}
+        \column{.45\textwidth}
+        \begin{block}{Answered Questions}
+            How many primes are there?
+        \end{block}
+
+        \column{.45\textwidth}
+        \begin{block}{Open Questions}
+            Is every even number the sum of two primes?
+            \cite{Goldbach1742}
+        \end{block}
+    \end{columns}
+
+    \begin{thebibliography}{10}
+        \bibitem{Goldbach1742}[Goldbach, 1742]
+        Christian Goldbach.
+        \newblock A problem we should try to solve before the ISPN '43 deadline,
+        \newblock \emph{Letter to Leonhard Euler}, 1742.
+    \end{thebibliography}
+\end{frame}
+
+\subsection{Another Open Question}
+
+\begin{frame}
+    \frametitle{Another Open Question}
+
+    In complex plane, define $\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}$. Then, are all zeros of $\zeta$ in the strip $0\leq\Re{s}\leq1$ lie on the line $\Re{s}=\frac12$?
+    \pause
+
+    \begin{block}{Some Observation}
+        If $\Re{s}>1$\pause, then
+        \begin{align*}
+            \zeta(s)&=\sum_{n=1}^\infty\frac1{n^s}\\
+            &=\prod_p\frac1{1-p^{-s}}.
+        \end{align*}
+        \pause
+       Thus $\zeta$ does not vanish when $\Re{s}>1$.
+    \end{block}
+\end{frame}
+
+\subsection{An Algorithm For Finding Primes Numbers}
+
+\begin{frame}[fragile]
+    \frametitle{An Algorithm For Finding Primes Numbers}
+
+    \begin{semiverbatim}
+        \uncover<1->{\alert<0>{int main (void)}}
+        \uncover<1->{\alert<0>{\{}}
+        \uncover<1->{\alert<1>{ \alert<4>{std::}vector<bool> is_prime (100, true);}}
+        \uncover<1->{\alert<1>{ for (int i = 2; i < 100; i++)}}
+        \uncover<2->{\alert<2>{ if (is_prime[i])}}
+        \uncover<2->{\alert<0>{ \{}}
+        \uncover<3->{\alert<3>{ \alert<4>{std::}cout << i << " ";}}
+        \uncover<3->{\alert<3>{ for (int j = i; j < 100;}}
+        \uncover<3->{\alert<3>{ is_prime [j] = false, j+=i);}}
+        \uncover<2->{\alert<0>{ \}}}
+        \uncover<1->{\alert<0>{ return 0;}}
+        \uncover<1->{\alert<0>{\}}}
+    \end{semiverbatim}
+
+    \visible<4->{Note the use of \alert{\texttt{std::}}.}
+\end{frame}
+
+\end{document}
