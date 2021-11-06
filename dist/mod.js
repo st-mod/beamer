@@ -60,6 +60,9 @@ export function listen() {
             show();
             return;
         }
+        if (!document.documentElement.classList.contains('showing')) {
+            return;
+        }
         if (e.key === 'Escape') {
             document.documentElement.classList.remove('showing');
             return;
