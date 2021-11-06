@@ -1,5 +1,6 @@
 import { UnitCompiler } from '@ddu6/stc';
 import { STDN, STDNUnit } from 'stdn';
+export declare function listen(): void;
 export declare function findUnit(tag: string, stdn: STDN): STDNUnit | undefined;
 export declare function findUnits(tag: string, stdn: STDN): STDNUnit[];
 export declare function unitToInlinePlainString(unit: STDNUnit): string;

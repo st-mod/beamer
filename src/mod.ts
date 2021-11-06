@@ -3,37 +3,77 @@ import {STDN, STDNUnit} from 'stdn'
 import {a as oa} from '@ddu6/cfr'
 const slides:SVGElement[]=[]
 let index=0
-addEventListener('keydown',e=>{
-    if(slides.length===0){
-        return
-    }
-    if(e.key==='Enter'){
-        for(let i=0;i<slides.length;i++){
-            const {top,height}=slides[i].getBoundingClientRect()
-            if(top+height/2>=0){
-                index=i
-                break
-            }
-        }
+const history:(number|undefined)[]=[]
+let historyIndex=0
+function go(newIndex:number){
+    history[historyIndex]=index=newIndex
+    history[historyIndex+1]=undefined
+    slides[index].scrollIntoView()
+}
+function up(){
+    go((index-1+slides.length)%slides.length)
+}
+function down(){
+    go((index+1)%slides.length)
+}
+function left(){
+    let result=history[historyIndex-1]
+    if(result!==undefined){
+        index=result
+        historyIndex--
         slides[index].scrollIntoView()
-        document.documentElement.classList.add('showing')
-        return
     }
-    if(e.key==='Escape'){
-        document.documentElement.classList.remove('showing')
-        return
+}
+function right(){
+    let result=history[historyIndex+1]
+    if(result!==undefined){
+        index=result
+        historyIndex++
+        slides[index].scrollIntoView()
     }
-    if(e.key==='ArrowUp'||e.key==='PageUp'){
-        e.preventDefault()
-        slides[index=(index-1+slides.length)%slides.length].scrollIntoView()
-        return
-    }
-    if(e.key==='ArrowDown'||e.key==='PageDown'){
-        e.preventDefault()
-        slides[index=(index+1)%slides.length].scrollIntoView()
-        return
-    }
-})
+}
+export function listen(){
+    addEventListener('keydown',e=>{
+        if(slides.length===0){
+            return
+        }
+        if(e.key==='Enter'){
+            for(let i=0;i<slides.length;i++){
+                const {top,height}=slides[i].getBoundingClientRect()
+                if(top+height/2>=0){
+                    go(i)
+                    document.documentElement.classList.add('showing')
+                    break
+                }
+            }
+            return
+        }
+        if(e.key==='Escape'){
+            document.documentElement.classList.remove('showing')
+            return
+        }
+        if(e.key==='ArrowUp'||e.key==='PageUp'){
+            e.preventDefault()
+            up()
+            return
+        }
+        if(e.key==='ArrowDown'||e.key==='PageDown'){
+            e.preventDefault()
+            down()
+            return
+        }
+        if(e.key==='ArrowLeft'){
+            e.preventDefault()
+            left()
+            return
+        }
+        if(e.key==='ArrowRight'){
+            e.preventDefault()
+            right()
+            return
+        }
+    })
+}
 export function findUnit(tag:string,stdn:STDN):STDNUnit|undefined{
     for(const line of stdn){
         for(const unit of line){
@@ -302,8 +342,7 @@ export function jumpTo(id:string){
     }
     for(let i=0;i<slides.length;i++){
         if(slides[i]===slide){
-            index=i
-            slide.scrollIntoView()
+            go(i)
             break
         }
     }
