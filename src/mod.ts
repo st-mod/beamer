@@ -6,8 +6,10 @@ let index=0
 const history:(number|undefined)[]=[]
 let historyIndex=-1
 function go(newIndex:number){
-    history[++historyIndex]=index=newIndex
-    history[historyIndex+1]=undefined
+    if(index!==newIndex){
+        history[++historyIndex]=index=newIndex
+        history[historyIndex+1]=undefined
+    }
     slides[index].scrollIntoView()
 }
 function up(){
