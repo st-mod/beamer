@@ -1,24 +1,23 @@
 import {UnitCompiler} from '@ddu6/stc'
 import {STDN, STDNUnit} from 'stdn'
-import {a as oa} from '@ddu6/cfr'
 const slides:SVGElement[]=[]
 let index=0
 const history:(number|undefined)[]=[]
 let historyIndex=-1
-function go(newIndex:number){
+export function go(newIndex:number){
     if(index!==newIndex){
         history[++historyIndex]=index=newIndex
         history[historyIndex+1]=undefined
     }
     slides[index].scrollIntoView()
 }
-function up(){
+export function up(){
     go((index-1+slides.length)%slides.length)
 }
-function down(){
+export function down(){
     go((index+1)%slides.length)
 }
-function left(){
+export function left(){
     let result=history[historyIndex-1]
     if(result!==undefined){
         index=result
@@ -26,12 +25,31 @@ function left(){
         slides[index].scrollIntoView()
     }
 }
-function right(){
+export function right(){
     let result=history[historyIndex+1]
     if(result!==undefined){
         index=result
         historyIndex++
         slides[index].scrollIntoView()
+    }
+}
+export function normalize(){
+    for(let i=0;i<slides.length;i++){
+        const {bottom}=slides[i].getBoundingClientRect()
+        if(bottom>0){
+            go(i)
+            break
+        }
+    }
+}
+export function show(){
+    for(let i=0;i<slides.length;i++){
+        const {top,height}=slides[i].getBoundingClientRect()
+        if(top+height/2>=0){
+            go(i)
+            document.documentElement.classList.add('showing')
+            break
+        }
     }
 }
 export function listen(){
@@ -40,14 +58,7 @@ export function listen(){
             return
         }
         if(e.key==='Enter'){
-            for(let i=0;i<slides.length;i++){
-                const {top,height}=slides[i].getBoundingClientRect()
-                if(top+height/2>=0){
-                    go(i)
-                    document.documentElement.classList.add('showing')
-                    break
-                }
-            }
+            show()
             return
         }
         if(e.key==='Escape'){
@@ -73,6 +84,11 @@ export function listen(){
             e.preventDefault()
             right()
             return
+        }
+    })
+    addEventListener('scroll',()=>{
+        if(document.documentElement.classList.contains('showing')){
+            normalize()
         }
     })
 }
@@ -348,24 +364,6 @@ export function jumpTo(id:string){
             break
         }
     }
-}
-export const a:UnitCompiler=async (unit,compiler)=>{
-    const {href}=unit.options
-    if(typeof href!=='string'||!href.startsWith('#')){
-        return await oa(unit,compiler)
-    }
-    const element=document.createElement('a')
-    const id=decodeURIComponent(href.slice(1))
-    if(id.length>0){
-        element.href=''
-        element.classList.add('no-color')
-        element.addEventListener('click',e=>{
-            e.preventDefault()
-            jumpTo(id)
-        })
-    }
-    element.append(await compiler.compileInlineSTDN(unit.children))
-    return element
 }
 export const outline:UnitCompiler=async (unit,compiler)=>{
     const pause=unit.options.pause===true

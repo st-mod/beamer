@@ -1,5 +1,12 @@
 import { UnitCompiler } from '@ddu6/stc';
 import { STDN, STDNUnit } from 'stdn';
+export declare function go(newIndex: number): void;
+export declare function up(): void;
+export declare function down(): void;
+export declare function left(): void;
+export declare function right(): void;
+export declare function normalize(): void;
+export declare function show(): void;
 export declare function listen(): void;
 export declare function findUnit(tag: string, stdn: STDN): STDNUnit | undefined;
 export declare function findUnits(tag: string, stdn: STDN): STDNUnit[];
@@ -16,5 +23,4 @@ export interface SlidableElement {
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare const frame: UnitCompiler;
 export declare function jumpTo(id: string): void;
-export declare const a: UnitCompiler;
 export declare const outline: UnitCompiler;

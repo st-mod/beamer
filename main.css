@@ -81,10 +81,6 @@ body>.lr-struct>main>article {
     right: 0;
 }
 
-.unit.frame a.no-color {
-    color: inherit;
-}
-
 .unit.frame address {
     font-size: var(--length-font-log);
 }
