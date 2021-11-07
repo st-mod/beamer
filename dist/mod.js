@@ -422,10 +422,10 @@ export const outline = async (unit, compiler) => {
         }
         sul = document.createElement('ul');
         ul.append(li);
-        ul.append(sul);
+        li.append(sul);
         count++;
         if (pause && count > 1) {
-            sul.dataset.slide = li.dataset.slide = `${count}-`;
+            li.dataset.slide = `${count}-`;
         }
     }
     return ul;
