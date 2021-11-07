@@ -273,6 +273,20 @@ export function extractSlidableElements(parent) {
     }
     return out;
 }
+export function removeAfter(node, parent) {
+    while (true) {
+        while (true) {
+            if (node.nextSibling === null) {
+                break;
+            }
+            node.nextSibling.remove();
+        }
+        if (node.parentNode === null || node.parentNode === parent) {
+            break;
+        }
+        node = node.parentNode;
+    }
+}
 let title = '';
 let author = '';
 let date = '';
@@ -336,6 +350,11 @@ export const frame = async (unit, compiler) => {
         dateEle.textContent = date;
         pageEle.textContent = page.toString();
         let more = false;
+        const pause = main.querySelectorAll('.unit.pause')[i];
+        if (pause !== undefined) {
+            removeAfter(pause, main);
+            more = true;
+        }
         for (const { element, classArray } of extractSlidableElements(main)) {
             if (i < classArray.length - 1) {
                 more = true;

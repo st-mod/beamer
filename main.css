@@ -102,3 +102,7 @@ body>.lr-struct>main>article {
 .unit.frame .unit.outline>ul>li>a {
     display: block;
 }
+
+.unit.frame .unit.pause {
+    display: none;
+}

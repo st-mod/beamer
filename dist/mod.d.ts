@@ -22,6 +22,7 @@ export interface SlidableElement {
     classArray: string[];
 }
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
+export declare function removeAfter(node: Node, parent: Node): void;
 export declare const frame: UnitCompiler;
 export declare function replaceAnchors(fragment: DocumentFragment): DocumentFragment;
 export declare const outline: UnitCompiler;

@@ -1,5 +1,5 @@
 import {UnitCompiler} from '@ddu6/stc'
-import {STDN, STDNUnit} from 'stdn'
+import {STDN,STDNUnit} from 'stdn'
 const slides:SVGElement[]=[]
 let index=0
 const history:(number|undefined)[]=[]
@@ -280,6 +280,20 @@ export function extractSlidableElements(parent:Element){
     }
     return out
 }
+export function removeAfter(node:Node,parent:Node){
+    while(true){
+        while(true){
+            if(node.nextSibling===null){
+                break
+            }
+            node.nextSibling.remove()
+        }
+        if(node.parentNode===null||node.parentNode===parent){
+            break
+        }
+        node=node.parentNode
+    }
+}
 let title=''
 let author=''
 let date=''
@@ -341,6 +355,11 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         dateEle.textContent=date
         pageEle.textContent=page.toString()
         let more=false
+        const pause=main.querySelectorAll('.unit.pause')[i]
+        if(pause!==undefined){
+            removeAfter(pause,main)
+            more=true
+        }
         for(const {element,classArray} of extractSlidableElements(main)){
             if(i<classArray.length-1){
                 more=true
