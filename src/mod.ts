@@ -411,9 +411,9 @@ export function replaceAnchors(fragment:DocumentFragment){
 export const outline:UnitCompiler=async (unit,compiler)=>{
     const pause=unit.options.pause===true
     const ul=document.createElement('ul')
-    let sul=document.createElement('ul')
-    ul.append(sul)
-    let count=0
+    let sul:HTMLUListElement|undefined
+    let count1=0
+    let count2=0
     for(const indexInfo of compiler.context.indexInfoArray){
         if(indexInfo.realOrbit!=='heading'||indexInfo.index.length>2){
             continue
@@ -424,16 +424,26 @@ export const outline:UnitCompiler=async (unit,compiler)=>{
         a.append(replaceAnchors(await compiler.compileSTDN(indexInfo.unit.children)))
         a.href=`#${encodeURIComponent(indexInfo.id)}`
         if(indexInfo.index.length===2){
-            sul.append(li)
+            if(sul!==undefined){
+                sul.append(li)
+                count2++
+            }
             continue
         }
         sul=document.createElement('ul')
         ul.append(li)
         li.append(sul)
-        count++
-        if(pause&&count>1){
-            li.dataset.slide=`${count}-`
+        count1++
+        count2++
+        if(pause&&count1>1){
+            li.dataset.slide=`${count1}-`
         }
+    }
+    if(count2>12){
+        ul.classList.add('compact')
+    }
+    if(count2>24){
+        ul.classList.add('very-compact')
     }
     return ul
 }

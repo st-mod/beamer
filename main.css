@@ -103,6 +103,30 @@ body>.lr-struct>main>article {
     display: block;
 }
 
+.unit.frame .unit.outline.compact {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 840px;
+}
+
+.unit.frame .unit.outline.compact>li,
+.unit.frame .unit.outline.compact>li>ul>li {
+    margin: var(--length-space) 0;
+}
+
+.unit.frame .unit.outline.compact>li {
+    width: 50%;
+}
+
+.unit.frame .unit.outline.very-compact>li {
+    width: calc(100% / 3);
+}
+
+.unit.frame .unit.outline.very-compact>li>ul {
+    font-size: var(--length-font-log);
+}
+
 .unit.frame .unit.pause {
     display: none;
 }
