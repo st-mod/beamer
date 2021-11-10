@@ -46,7 +46,7 @@
         {pause []}
         {li [3 is prime (two divisors: 1 and 3).]}
         {pause []}
-        {li [[4 is not prime (, {b [three]}' divisors: 1, 2, and 4).']]}
+        {li [[4 is not prime ({b [three]}' divisors: 1, 2, and 4).']]}
     ]}]}
 ]}
 {class vcenter, frame [{h1 [Results]}]}
