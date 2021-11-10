@@ -1,4 +1,6 @@
-{css-src test.css, ucs-src main.js, global []}
+{css-src main.css, ucs-src main.js, global []}
+{css-src addon/main.css, global []}
+{css-src test.css, global []}
 {global, orbit heading, h1 []}
 {global, orbit heading, level 2, h2 []}
 {class vcenter, frame [
@@ -28,21 +30,18 @@
     {abbr 'ISPN \'80', date [27th International Symposium of Prime Numbers (-280)]}
 ]}
 {frame [
-    {h1 [Outline]}
+    {big [Outline]}
     {pause, outline []}
 ]}
-{class vcenter, frame [
-    //
-    {id motivation, h1 [Motivation]}
-]}
+{class vcenter, frame [{h1 [Motivation]}]}
 {frame [
-    {id what-are-prime-numbers, h2 [What Are Prime Numbers?]}
-    {id prime, definition [
+    {h2 [What Are Prime Numbers?]}
+    {definition [
         //
         ['A '{i [prime number]}' is a number that has exactly two divisors.']
     ]}
     []
-    {id eg-prime, example [{ul [
+    {example [{ul [
         {li [2 is prime (two divisors: 1 and 2).]}
         {pause []}
         {li [3 is prime (two divisors: 1 and 3).]}
@@ -50,13 +49,10 @@
         {li [[4 is not prime (, {b [three]}' divisors: 1, 2, and 4).']]}
     ]}]}
 ]}
-{class vcenter, frame [
-    //
-    {id results, h1 [Results]}
-]}
+{class vcenter, frame [{h1 [Results]}]}
 {frame [
-    {id proof-of-the-main-theorem, h2 [Proof of the Main Theorem]}
-    {id main, theorem [There is no largest prime number.]}
+    {h2 [Proof of the Main Theorem]}
+    {theorem [There is no largest prime number.]}
     []
     {class no-qed, proof [{ul [
         {slide warn 1, li [['Suppose '{'p'}' were the largest prime number.']]}
@@ -67,12 +63,9 @@
     []
     {slide 5-, div [['The proof used '{i [reductio ad absurdum]}.]]}
 ]}
-{class vcenter, frame [
-    //
-    {id whats-more, h1 ['What\'s More']}
-]}
+{class vcenter, frame [{h1 ['What\'s More']}]}
 {frame [
-    {id whats-still-to-do, h2 ['What\'s Still To Do?']}
+    {h2 [An Open Question]}
     {two [
         {dl [
             {dt [Answered Questions]}
@@ -80,18 +73,18 @@
         ]}
         {dl [
             {dt [Open Questions]}
-            {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id Goldbach1742, ref []})]]}
+            {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id goldbach1742, ref []})]]}
         ]}
     ]}
     []
-    {id Goldbach1742, orbit letter, block, index [
+    {id goldbach1742, orbit letter, block, index [
         //
         ['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']
     ]}
 ]}
 {global, '\def\Re#1{\operatorname{Re}\left(#1\right)}'}
 {frame [
-    {id another-open-question, h2 [Another Open Question]}
+    {h2 [Another Open Question]}
     ['In complex plane, define '{'\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}'}'. Then, are all zeros of '{'\zeta'}' in the strip '{'0\leq\Re{s}\leq1'}' lie on the line '{'\Re{s}=\frac12'}?]
     {pause []}
     []
@@ -107,7 +100,7 @@
 ]}
 {global, vsce cpp, code []}
 {frame [
-    {id an-algorithm-for-finding-primes-numbers, h2 [An Algorithm For Finding Primes Numbers]}
+    {h2 [An Algorithm For Finding Primes Numbers]}
     {lang cpp, slide c1 1 c2 2 c3 3 c4 4-, code [
         'int main (){'
         '    std::vector<bool> is_prime (100, true);'
@@ -123,7 +116,4 @@
     []
     {slide 4-, div [['Note the use of '{code [std::]}.]]}
 ]}
-{class vcenter, frame [
-    //
-    {h1 [Thanks]}
-]}
+{class vcenter, frame [{big [Thanks]}]}

@@ -3,7 +3,7 @@ let index = 0;
 const history = [];
 let historyIndex = -1;
 export function go(newIndex) {
-    if (index !== newIndex) {
+    if (index !== newIndex || historyIndex === -1) {
         history[++historyIndex] = index = newIndex;
         history[historyIndex + 1] = undefined;
     }

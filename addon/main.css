@@ -1,0 +1,11 @@
+.unit.frame .unit.big {
+    font-size: var(--length-font-title);
+    margin: var(--length-padding) 0;
+    text-align: center;
+}
+
+.unit.frame .unit.two {
+    display: grid;
+    gap: var(--length-gap);
+    grid-template-columns: 1fr 1fr;
+}
