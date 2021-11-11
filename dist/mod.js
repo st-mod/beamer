@@ -408,7 +408,7 @@ export const outline = async (unit, compiler) => {
     let count1 = 0;
     let count2 = 0;
     for (const indexInfo of compiler.context.indexInfoArray) {
-        if (indexInfo.realOrbit !== 'heading' || indexInfo.index.length > 2) {
+        if (indexInfo.orbit !== 'heading' || indexInfo.index.length > 2) {
             continue;
         }
         const li = document.createElement('li');

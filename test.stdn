@@ -3,6 +3,7 @@
 {css-src test.css, global []}
 {global, orbit heading, h1 []}
 {global, orbit heading, level 2, h2 []}
+{global, compile-with h1, big []}
 {class vcenter, frame [
     {abbr No Largest Prime, title [There Is No Largest Prime Number]}
     {display [With an introduction to a new proof technique]}
@@ -36,34 +37,38 @@
 {class vcenter, frame [{h1 [Motivation]}]}
 {frame [
     {h2 [What Are Prime Numbers?]}
-    {definition [
-        //
-        ['A '{i [prime number]}' is a number that has exactly two divisors.']
-    ]}
+    {definition [['A '{i [prime number]}' is a number that has exactly two divisors.']]}
     []
-    {example [{ul [
-        {li [2 is prime (two divisors: 1 and 2).]}
-        {pause []}
-        {li [3 is prime (two divisors: 1 and 3).]}
-        {pause []}
-        {li [[4 is not prime ({b [three]}' divisors: 1, 2, and 4).']]}
-    ]}]}
+    {example [
+        //
+        {ul [
+            {li [2 is prime (two divisors: 1 and 2).]}
+            {pause []}
+            {li [3 is prime (two divisors: 1 and 3).]}
+            {pause []}
+            {li [[4 is not prime ({b [three]}' divisors: 1, 2, and 4).']]}
+        ]}
+    ]}
 ]}
 {class vcenter, frame [{h1 [Results]}]}
 {frame [
     {h2 [Proof of the Main Theorem]}
     {theorem [There is no largest prime number.]}
     []
-    {class no-qed, proof [{ul [
-        {slide warn 1, li [['Suppose '{'p'}' were the largest prime number.']]}
-        {slide 2-, li [['Let '{'q'}' be the product of the first '{'p'}' numbers.']]}
-        {slide 3-, li [['Then '{'q+1'}' is not divisible by any of them.']]}
-        {li [['But '{'q+1'}' is '{slide ^hide 4-, span [['greater than '{'1'}', thus ']]}'divisible by some prime number not in the first '{'p'}' numbers.'{slide 4-, qed []}]]}
-    ]}]}
+    {class no-qed, proof [
+        //
+        {ul [
+            {slide warn 1, li [['Suppose '{'p'}' were the largest prime number.']]}
+            {slide 2-, li [['Let '{'q'}' be the product of the first '{'p'}' numbers.']]}
+            {slide 3-, li [['Then '{'q+1'}' is not divisible by any of them.']]}
+            {li [['But '{'q+1'}' is '{slide ^hide 4-, span [['greater than '{'1'}', thus ']]}'divisible by some prime number not in the first '{'p'}' numbers.'{slide 4-, qed []}]]}
+        ]}
+    ]}
     []
     {slide 5-, div [['The proof used '{i [reductio ad absurdum]}.]]}
 ]}
 {class vcenter, frame [{h1 ['What\'s More']}]}
+{global, compile-with index, block, letter []}
 {frame [
     {h2 [An Open Question]}
     {two [
@@ -77,10 +82,7 @@
         ]}
     ]}
     []
-    {id goldbach1742, orbit letter, block, index [
-        //
-        ['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']
-    ]}
+    {id goldbach1742, letter [['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']]}
 ]}
 {global, '\def\Re#1{\operatorname{Re}\left(#1\right)}'}
 {frame [
