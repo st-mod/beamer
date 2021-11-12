@@ -31,7 +31,7 @@
 }
 
 .unit.frame>svg>foreignObject>div>footer>div {
-    font-size: var(--length-font-circle);
+    font-size: var(--length-font-log);
     text-align: center;
 }
 

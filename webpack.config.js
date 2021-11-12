@@ -1,6 +1,5 @@
-const path = require('path')
 module.exports = {
-    entry: './src/mod.ts',
+    entry: './dist/mod.js',
     mode: 'production',
     experiments: {
         outputModule: true
@@ -12,17 +11,5 @@ module.exports = {
             type: 'module'
         },
         module: true
-    },
-    module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            }
-        ]
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js']
     }
 }
