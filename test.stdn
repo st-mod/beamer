@@ -1,9 +1,6 @@
-{css-src main.css, ucs-src main.js, global []}
+{css-src main.css, ucs-src ucs.js, global []}
 {css-src addon/main.css, global []}
 {css-src test.css, global []}
-{global, orbit heading, h1 []}
-{global, orbit heading, level 2, h2 []}
-{global, compile-with h1, big []}
 {class vcenter, frame [
     {abbr No Largest Prime, title [There Is No Largest Prime Number]}
     {display [With an introduction to a new proof technique]}
@@ -31,7 +28,7 @@
     {abbr 'ISPN \'80', date [27th International Symposium of Prime Numbers (-280)]}
 ]}
 {frame [
-    {big [Outline]}
+    {h0 [Outline]}
     {pause, outline []}
 ]}
 {class vcenter, frame [{h1 [Motivation]}]}
@@ -90,7 +87,7 @@
     ['In complex plane, define '{'\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}'}'. Then, are all zeros of '{'\zeta'}' in the strip '{'0\leq\Re{s}\leq1'}' lie on the line '{'\Re{s}=\frac12'}?]
     {pause []}
     []
-    {h4 [Some Observation]}
+    {h3 [Some Observation]}
     ['If '{'\Re{s}>1'}{pause []}', then']
     {align [
         ['\zeta(s)&=\sum_{n=1}^\infty\frac1{n^s}'\\]
@@ -118,4 +115,4 @@
     []
     {slide 4-, div [['Note the use of '{code [std::]}.]]}
 ]}
-{class vcenter, frame [{big [Thanks]}]}
+{class vcenter, frame [{h0 [Thanks]}]}

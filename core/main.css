@@ -70,6 +70,20 @@
     justify-content: center;
 }
 
+.unit.frame .unit.h0,
+.unit.frame h1 {
+    border: 0;
+    font-size: var(--length-font-title);
+    margin: var(--length-padding) 0;
+    padding: 0;
+    text-align: center;
+}
+
+.unit.frame h2 {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--length-space);
+}
+
 .unit.frame .unit.outline>li>a,
 .unit.frame .unit.outline>ul>li>a {
     display: block;

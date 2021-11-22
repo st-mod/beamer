@@ -1,11 +1,10 @@
 {title [Beamer]}
 {ucs cfr, global []}
-{global, orbit heading, h2 []}
 This is a stdn module for creating slides.
 []
-{h2 [Quick Start]}
+{h1 [Quick Start]}
 {ol [
-    {li [['Open '{src test.stdn, a [test.stdn]}.]]}
+    {li [['View '{src test.stdn, a [test.stdn]}.]]}
     {li [['Press '{kbd [Enter]}.]]}
     {li [['Press '{kbd [Page Down]}.]]}
     {li [['Press '{kbd [Arrow Up]}.]]}
@@ -13,7 +12,7 @@ This is a stdn module for creating slides.
     {li [['Press '{kbd [Escape]}.]]}
 ]}
 []
-{h2 [Import]}
+{h1 [Import]}
 {lang stdn, code [
     '{mod beamer, global []}'
     '{css beamer/addon, global []}'

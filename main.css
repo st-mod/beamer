@@ -27,3 +27,18 @@ body>.lr-struct>main {
 body>.lr-struct>main>article {
     padding: 0;
 }
+
+@media print {
+    body>.lr-struct>button {
+        display: none;
+    }
+    
+    .unit.frame>svg {
+        margin: 0;
+    }
+}
+
+@page {
+    margin: 0;
+    size: 1920px 1080px;
+}
