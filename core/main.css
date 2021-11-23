@@ -84,6 +84,10 @@
     padding-bottom: var(--length-space);
 }
 
+.unit.frame .unit.outline>li {
+    margin: var(--length-gap) 0;
+}
+
 .unit.frame .unit.outline>li>a,
 .unit.frame .unit.outline>ul>li>a {
     display: block;
@@ -96,12 +100,8 @@
     max-height: 840px;
 }
 
-.unit.frame .unit.outline.compact>li,
-.unit.frame .unit.outline.compact>li>ul>li {
-    margin: var(--length-space) 0;
-}
-
 .unit.frame .unit.outline.compact>li {
+    margin: var(--length-space) 0;
     width: 50%;
 }
 
