@@ -16,10 +16,10 @@ export declare function stdnToInlinePlainString(stdn: STDN): string;
 export declare type SlideIndexes = (true | undefined)[];
 export declare function parseSlideIndexesStr(string: string): SlideIndexes;
 export declare function parseSlideIndexesStrs(strings: string[]): SlideIndexes[];
-export declare function parseSlideStr(string: string): string[];
+export declare function parseSlideStr(string: string): string[][];
 export interface SlidableElement {
     element: Element;
-    classArray: string[];
+    classesArray: string[][];
 }
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare function removeAfter(node: Node, parent: Node): void;

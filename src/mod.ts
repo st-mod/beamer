@@ -257,11 +257,11 @@ export function parseSlideStr(string:string){
             classesArray[i].push(...rclasses)
         }
     }
-    return classesArray.map(val=>val.join(' '))
+    return classesArray
 }
 export interface SlidableElement {
     element:Element
-    classArray:string[]
+    classesArray:string[][]
 }
 export function extractSlidableElements(parent:Element){
     const out:SlidableElement[]=[]
@@ -270,11 +270,11 @@ export function extractSlidableElements(parent:Element){
         if(string===null){
             continue
         }
-        const classArray=parseSlideStr(string)
-        if(classArray.length>0){
+        const classesArray=parseSlideStr(string)
+        if(classesArray.length>0){
             out.push({
                 element,
-                classArray,
+                classesArray,
             })
         }
     }
@@ -360,17 +360,11 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
             removeAfter(pause,main)
             more=true
         }
-        for(const {element,classArray} of extractSlidableElements(main)){
-            if(i<classArray.length-1){
+        for(const {element,classesArray} of extractSlidableElements(main)){
+            if(i<classesArray.length-1){
                 more=true
             }
-            const newClass=classArray[Math.min(i,classArray.length-1)]
-            if(newClass.length>0){
-                element.setAttribute(
-                    'class',
-                    (element.getAttribute('class')??'')+' '+newClass
-                )
-            }
+            element.classList.add(...classesArray[Math.min(i,classesArray.length-1)])
         }
         if(!more){
             break
