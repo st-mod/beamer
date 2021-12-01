@@ -4,20 +4,20 @@ const slides:SVGElement[]=[]
 let index=0
 const history:(number|undefined)[]=[]
 let historyIndex=-1
-export function go(newIndex:number){
+function go(newIndex:number){
     if(index!==newIndex||historyIndex===-1){
         history[++historyIndex]=index=newIndex
         history[historyIndex+1]=undefined
     }
     slides[index].scrollIntoView()
 }
-export function up(){
+function up(){
     go((index-1+slides.length)%slides.length)
 }
-export function down(){
+function down(){
     go((index+1)%slides.length)
 }
-export function left(){
+function left(){
     let result=history[historyIndex-1]
     if(result!==undefined){
         index=result
@@ -25,7 +25,7 @@ export function left(){
         slides[index].scrollIntoView()
     }
 }
-export function right(){
+function right(){
     let result=history[historyIndex+1]
     if(result!==undefined){
         index=result
@@ -33,7 +33,7 @@ export function right(){
         slides[index].scrollIntoView()
     }
 }
-export function normalize(){
+function normalize(){
     for(let i=0;i<slides.length;i++){
         const {bottom}=slides[i].getBoundingClientRect()
         if(bottom>1){
@@ -43,7 +43,7 @@ export function normalize(){
     }
 }
 let showing=false
-export function show(){
+function show(){
     for(let i=0;i<slides.length;i++){
         const {top,height}=slides[i].getBoundingClientRect()
         if(top+height/2>=0){
@@ -54,7 +54,7 @@ export function show(){
         }
     }
 }
-export function exit(){
+function exit(){
     showing=false
     document.documentElement.classList.remove('showing')
     go(index)
@@ -102,7 +102,7 @@ export function listen(){
         }
     })
 }
-export function findUnit(tag:string,stdn:STDN):STDNUnit|undefined{
+function findUnit(tag:string,stdn:STDN):STDNUnit|undefined{
     for(const line of stdn){
         for(const unit of line){
             if(typeof unit==='string'){
@@ -127,7 +127,7 @@ export function findUnit(tag:string,stdn:STDN):STDNUnit|undefined{
         }
     }
 }
-export function findUnits(tag:string,stdn:STDN):STDNUnit[]{
+function findUnits(tag:string,stdn:STDN):STDNUnit[]{
     const out:STDNUnit[]=[]
     for(const line of stdn){
         for(const unit of line){
@@ -148,10 +148,7 @@ export function findUnits(tag:string,stdn:STDN):STDNUnit[]{
     }
     return out
 }
-export function unitToInlinePlainString(unit:STDNUnit){
-    return stdnToInlinePlainString(unit.children)
-}
-export function stdnToInlinePlainString(stdn:STDN){
+function stdnToInlinePlainString(stdn:STDN){
     if(stdn.length===0){
         return ''
     }
@@ -165,8 +162,11 @@ export function stdnToInlinePlainString(stdn:STDN){
     }
     return string
 }
-export type SlideIndexes=(true|undefined)[]
-export function parseSlideIndexesStr(string:string){
+function unitToInlinePlainString(unit:STDNUnit){
+    return stdnToInlinePlainString(unit.children)
+}
+type SlideIndexes=(true|undefined)[]
+function parseSlideIndexesStr(string:string){
     const array:SlideIndexes=[]
     for(const item of string.trim().split(/\s+/)){
         if(/^\d+-$/.test(item)){
@@ -198,7 +198,7 @@ export function parseSlideIndexesStr(string:string){
     }
     return array
 }
-export function parseSlideIndexesStrs(strings:string[]){
+function parseSlideIndexesStrs(strings:string[]){
     if(strings.length===0){
         return []
     }
@@ -259,7 +259,7 @@ export function parseSlideStr(string:string){
     }
     return classesArray
 }
-export interface SlidableElement {
+export interface SlidableElement{
     element:Element
     classesArray:string[][]
 }
@@ -280,7 +280,7 @@ export function extractSlidableElements(parent:Element){
     }
     return out
 }
-export function removeAfter(node:Node,parent:Node){
+function removeAfter(node:Node,parent:Node){
     while(true){
         while(true){
             if(node.nextSibling===null){
@@ -382,7 +382,7 @@ const avoidAttributes=[
     'target',
     'type'
 ]
-export function replaceAnchors(fragment:DocumentFragment){
+function replaceAnchors(fragment:DocumentFragment){
     for(const a of fragment.querySelectorAll('a')){
         const span=document.createElement('span')
         for(const {name,value} of a.attributes){

@@ -2,20 +2,20 @@ const slides = [];
 let index = 0;
 const history = [];
 let historyIndex = -1;
-export function go(newIndex) {
+function go(newIndex) {
     if (index !== newIndex || historyIndex === -1) {
         history[++historyIndex] = index = newIndex;
         history[historyIndex + 1] = undefined;
     }
     slides[index].scrollIntoView();
 }
-export function up() {
+function up() {
     go((index - 1 + slides.length) % slides.length);
 }
-export function down() {
+function down() {
     go((index + 1) % slides.length);
 }
-export function left() {
+function left() {
     let result = history[historyIndex - 1];
     if (result !== undefined) {
         index = result;
@@ -23,7 +23,7 @@ export function left() {
         slides[index].scrollIntoView();
     }
 }
-export function right() {
+function right() {
     let result = history[historyIndex + 1];
     if (result !== undefined) {
         index = result;
@@ -31,7 +31,7 @@ export function right() {
         slides[index].scrollIntoView();
     }
 }
-export function normalize() {
+function normalize() {
     for (let i = 0; i < slides.length; i++) {
         const { bottom } = slides[i].getBoundingClientRect();
         if (bottom > 1) {
@@ -41,7 +41,7 @@ export function normalize() {
     }
 }
 let showing = false;
-export function show() {
+function show() {
     for (let i = 0; i < slides.length; i++) {
         const { top, height } = slides[i].getBoundingClientRect();
         if (top + height / 2 >= 0) {
@@ -52,7 +52,7 @@ export function show() {
         }
     }
 }
-export function exit() {
+function exit() {
     showing = false;
     document.documentElement.classList.remove('showing');
     go(index);
@@ -100,7 +100,7 @@ export function listen() {
         }
     });
 }
-export function findUnit(tag, stdn) {
+function findUnit(tag, stdn) {
     for (const line of stdn) {
         for (const unit of line) {
             if (typeof unit === 'string') {
@@ -125,7 +125,7 @@ export function findUnit(tag, stdn) {
         }
     }
 }
-export function findUnits(tag, stdn) {
+function findUnits(tag, stdn) {
     const out = [];
     for (const line of stdn) {
         for (const unit of line) {
@@ -146,10 +146,7 @@ export function findUnits(tag, stdn) {
     }
     return out;
 }
-export function unitToInlinePlainString(unit) {
-    return stdnToInlinePlainString(unit.children);
-}
-export function stdnToInlinePlainString(stdn) {
+function stdnToInlinePlainString(stdn) {
     if (stdn.length === 0) {
         return '';
     }
@@ -163,7 +160,10 @@ export function stdnToInlinePlainString(stdn) {
     }
     return string;
 }
-export function parseSlideIndexesStr(string) {
+function unitToInlinePlainString(unit) {
+    return stdnToInlinePlainString(unit.children);
+}
+function parseSlideIndexesStr(string) {
     const array = [];
     for (const item of string.trim().split(/\s+/)) {
         if (/^\d+-$/.test(item)) {
@@ -195,7 +195,7 @@ export function parseSlideIndexesStr(string) {
     }
     return array;
 }
-export function parseSlideIndexesStrs(strings) {
+function parseSlideIndexesStrs(strings) {
     if (strings.length === 0) {
         return [];
     }
@@ -273,7 +273,7 @@ export function extractSlidableElements(parent) {
     }
     return out;
 }
-export function removeAfter(node, parent) {
+function removeAfter(node, parent) {
     while (true) {
         while (true) {
             if (node.nextSibling === null) {
@@ -377,7 +377,7 @@ const avoidAttributes = [
     'target',
     'type'
 ];
-export function replaceAnchors(fragment) {
+function replaceAnchors(fragment) {
     for (const a of fragment.querySelectorAll('a')) {
         const span = document.createElement('span');
         for (const { name, value } of a.attributes) {
