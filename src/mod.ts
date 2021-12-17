@@ -171,6 +171,15 @@ function lineToInlinePlainString(line:STDNLine){
 function unitToInlinePlainString(unit:STDNUnit){
     return stdnToInlinePlainString(unit.children)
 }
+function stdnToInlinePlainStringLine(stdn:STDN){
+    for(const line of stdn){
+        const string=lineToInlinePlainString(line)
+        if(string.length>0){
+            return line
+        }
+    }
+    return []
+}
 type SlideIndexes=(true|undefined)[]
 function parseSlideIndexesStr(string:string){
     const array:SlideIndexes=[]
@@ -300,35 +309,22 @@ function removeAfter(node:Node,parent:Node){
         node=node.parentNode
     }
 }
-let title=''
-let author=''
-let date=''
+let title:STDNUnit|undefined
+let author:STDNUnit[]=[]
+let date:STDNUnit|undefined
 let page=0
 export const frame:UnitCompiler=async (unit,compiler)=>{
     const titleUnit=findUnit('title',unit.children)
     if(titleUnit!==undefined){
-        if(typeof titleUnit.options.abbr==='string'){
-            title=titleUnit.options.abbr
-        }else{
-            title=unitToInlinePlainString(titleUnit)
-        }
+        title=titleUnit
     }
     const authorUnits=findUnits('author',unit.children)
     if(authorUnits.length>0){
-        author=authorUnits.map(unit=>{
-            if(typeof unit.options.abbr==='string'){
-                return unit.options.abbr
-            }
-            return unitToInlinePlainString(unit)
-        }).join(', ')
+        author=authorUnits
     }
     const dateUnit=findUnit('date',unit.children)
     if(dateUnit!==undefined){
-        if(typeof dateUnit.options.abbr==='string'){
-            date=dateUnit.options.abbr
-        }else{
-            date=unitToInlinePlainString(dateUnit)
-        }
+        date=dateUnit
     }
     page++
     const element=document.createElement('div')
@@ -356,9 +352,48 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         slide.setAttribute('viewBox','0 0 1920 1080')
         fo.setAttribute('width','100%')
         fo.setAttribute('height','100%')
-        authorEle.textContent=author
-        titleEle.textContent=title
-        dateEle.textContent=date
+        if(author.length>0){
+            let df=new DocumentFragment()
+            for(let i=0;i<author.length;i++){
+                const unit=author[i]
+                const {abbr}=unit.options
+                if(typeof abbr==='string'){
+                    df.append(new Text(abbr))
+                }else if(typeof abbr==='object'){
+                    df.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)))
+                }else{
+                    df.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children)))
+                }
+                if(i<author.length-1){
+                    df.append(new Text(', '))
+                }
+            }
+            authorEle.append(df)
+        }
+        if(title!==undefined){
+            const {abbr}=title.options
+            let df:DocumentFragment|Text
+            if(typeof abbr==='string'){
+                df=new Text(abbr)
+            }else if(typeof abbr==='object'){
+                df=await compiler.compileLine(stdnToInlinePlainStringLine(abbr))
+            }else{
+                df=await compiler.compileLine(stdnToInlinePlainStringLine(title.children))
+            }
+            titleEle.append(df)
+        }
+        if(date!==undefined){
+            const {abbr}=date.options
+            let df:DocumentFragment|Text
+            if(typeof abbr==='string'){
+                df=new Text(abbr)
+            }else if(typeof abbr==='object'){
+                df=await compiler.compileLine(stdnToInlinePlainStringLine(abbr))
+            }else{
+                df=await compiler.compileLine(stdnToInlinePlainStringLine(date.children))
+            }
+            dateEle.append(df)
+        }
         pageEle.textContent=page.toString()
         let more=false
         const pause=main.querySelectorAll('.unit.pause')[i]
