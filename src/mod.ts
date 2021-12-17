@@ -1,5 +1,5 @@
 import {UnitCompiler} from '@ddu6/stc'
-import {STDN,STDNUnit} from 'stdn'
+import {STDN,STDNLine,STDNUnit} from 'stdn'
 const slides:SVGElement[]=[]
 let index=0
 const history:(number|undefined)[]=[]
@@ -149,11 +149,17 @@ function findUnits(tag:string,stdn:STDN):STDNUnit[]{
     return out
 }
 function stdnToInlinePlainString(stdn:STDN){
-    if(stdn.length===0){
-        return ''
+    for(const line of stdn){
+        const string=lineToInlinePlainString(line)
+        if(string.length>0){
+            return string
+        }
     }
+    return ''
+}
+function lineToInlinePlainString(line:STDNLine){
     let string=''
-    for(const inline of stdn[0]){
+    for(const inline of line){
         if(typeof inline==='string'){
             string+=inline
             continue
