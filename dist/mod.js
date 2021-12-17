@@ -147,11 +147,17 @@ function findUnits(tag, stdn) {
     return out;
 }
 function stdnToInlinePlainString(stdn) {
-    if (stdn.length === 0) {
-        return '';
+    for (const line of stdn) {
+        const string = lineToInlinePlainString(line);
+        if (string.length > 0) {
+            return string;
+        }
     }
+    return '';
+}
+function lineToInlinePlainString(line) {
     let string = '';
-    for (const inline of stdn[0]) {
+    for (const inline of line) {
         if (typeof inline === 'string') {
             string += inline;
             continue;
