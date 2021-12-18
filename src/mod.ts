@@ -391,7 +391,7 @@ function setSize(option:STDNUnitOptions[string]){
     const style=document.createElement('style')
     document.head.append(style)
     setWidthAndHeight(option)
-    style.textContent=`@page{size:${option}}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height*7/9}px}@media print{.unit.frame>svg{height:${height-1}px}}`
+    style.textContent=`@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height*7/9}px}`
 }
 let title:STDNUnit|undefined
 let author:STDNUnit[]=[]
