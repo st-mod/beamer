@@ -1,3 +1,4 @@
+import { getLastGlobalOption, lineToInlinePlainString } from '@ddu6/stc';
 const slides = [];
 let index = 0;
 const history = [];
@@ -146,29 +147,6 @@ function findUnits(tag, stdn) {
     }
     return out;
 }
-function stdnToInlinePlainString(stdn) {
-    for (const line of stdn) {
-        const string = lineToInlinePlainString(line);
-        if (string.length > 0) {
-            return string;
-        }
-    }
-    return '';
-}
-function lineToInlinePlainString(line) {
-    let string = '';
-    for (const inline of line) {
-        if (typeof inline === 'string') {
-            string += inline;
-            continue;
-        }
-        string += unitToInlinePlainString(inline);
-    }
-    return string;
-}
-function unitToInlinePlainString(unit) {
-    return stdnToInlinePlainString(unit.children);
-}
 function stdnToInlinePlainStringLine(stdn) {
     for (const line of stdn) {
         const string = lineToInlinePlainString(line);
@@ -302,11 +280,122 @@ function removeAfter(node, parent) {
         node = node.parentNode;
     }
 }
+let width = 1920;
+let height = 1080;
+let whset = false;
+function parseLength(string) {
+    if (string.endsWith('px')) {
+        return Number(string.slice(0, -2));
+    }
+    if (string.endsWith('cm')) {
+        return Number(string.slice(0, -2)) * 96 / 2.54;
+    }
+    if (string.endsWith('mm')) {
+        return Number(string.slice(0, -2)) * 96 / 25.4;
+    }
+    if (string.endsWith('in')) {
+        return Number(string.slice(0, -2)) * 96;
+    }
+    if (string.endsWith('pc')) {
+        return Number(string.slice(0, -2)) * 16;
+    }
+    if (string.endsWith('pt')) {
+        return Number(string.slice(0, -2)) * 4 / 3;
+    }
+    return NaN;
+}
+function setWidthAndHeight(string) {
+    if (string.endsWith(' landscape')) {
+        setWidthAndHeight(string.slice(0, -10).trim());
+        const tmp = width;
+        width = height;
+        height = tmp;
+        return;
+    }
+    if (string.endsWith(' portrait')) {
+        setWidthAndHeight(string.slice(0, -9).trim());
+        return;
+    }
+    if (string === 'A5') {
+        width = parseLength('148mm');
+        height = parseLength('210mm');
+        return;
+    }
+    if (string === 'A4') {
+        width = parseLength('210mm');
+        height = parseLength('297mm');
+        return;
+    }
+    if (string === 'A3') {
+        width = parseLength('297mm');
+        height = parseLength('420mm');
+        return;
+    }
+    if (string === 'B5') {
+        width = parseLength('176mm');
+        height = parseLength('250mm');
+        return;
+    }
+    if (string === 'B4') {
+        width = parseLength('250mm');
+        height = parseLength('353mm');
+        return;
+    }
+    if (string === 'JIS-B5') {
+        width = parseLength('182mm');
+        height = parseLength('257mm');
+        return;
+    }
+    if (string === 'JIS-B4') {
+        width = parseLength('257mm');
+        height = parseLength('364mm');
+        return;
+    }
+    if (string === 'letter') {
+        width = parseLength('8.5in');
+        height = parseLength('11in');
+        return;
+    }
+    if (string === 'legal') {
+        width = parseLength('8.5in');
+        height = parseLength('14in');
+        return;
+    }
+    if (string === 'ledger') {
+        width = parseLength('11in');
+        height = parseLength('17in');
+        return;
+    }
+    const [width0, height0] = string.trim().split(/\s+/, 2).map(parseLength);
+    if (isFinite(width0) && width0 > 0) {
+        width = width0;
+        if (height0 === undefined) {
+            height = width0;
+            return;
+        }
+        if (isFinite(height0) && height0 > 0) {
+            height = height0;
+        }
+    }
+}
+function setSize(option) {
+    if (typeof option !== 'string') {
+        return;
+    }
+    const style = document.createElement('style');
+    document.head.append(style);
+    setWidthAndHeight(option);
+    style.textContent = `@page{size:${option}}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height * 7 / 9}px}@media print{.unit.frame>svg{height:${height - 1}px}}`;
+}
 let title;
 let author = [];
 let date;
 let page = 0;
 export const frame = async (unit, compiler) => {
+    if (!whset) {
+        whset = true;
+        setSize(getLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
+    }
     const titleUnit = findUnit('title', unit.children);
     if (titleUnit !== undefined) {
         title = titleUnit;
@@ -342,7 +431,7 @@ export const frame = async (unit, compiler) => {
         footer.append(dateEle);
         footer.append(pageEle);
         slides.push(slide);
-        slide.setAttribute('viewBox', '0 0 1920 1080');
+        slide.setAttribute('viewBox', `0 0 ${width} ${height}`);
         fo.setAttribute('width', '100%');
         fo.setAttribute('height', '100%');
         if (author.length > 0) {

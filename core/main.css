@@ -1,12 +1,14 @@
 .unit.frame>svg {
+    border: solid var(--color-border);
+    border-width: 1px 0;
     display: block;
-    font-size: 32px;
     margin: var(--length-padding) 0;
     width: 100%;
 }
 
 .unit.frame>svg>foreignObject>div {
     display: grid;
+    font-size: 32px;
     grid-template-rows: 0 1fr 0 min-content;
     height: 1080px;
 }
@@ -15,12 +17,9 @@
     grid-template-rows: 1fr auto 1fr min-content;
 }
 
-.unit.frame>svg>foreignObject>div>* {
-    overflow: hidden;
-}
-
 .unit.frame>svg>foreignObject>div>main {
     grid-area: 2/1/span 1/span 1;
+    overflow: hidden;
     padding: 0 var(--length-padding);
 }
 

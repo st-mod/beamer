@@ -1,6 +1,7 @@
 {css-src main.css, ucs-src ucs.js, global []}
 {css-src addon/main.css, global []}
 {css-src test.css, global []}
+{global, size 1280px 960px, frame []}
 {class vcenter, frame [
     {abbr No Largest Prime, title [There Is No Largest Prime Number]}
     {display [With an introduction to a new proof technique]}
