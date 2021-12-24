@@ -544,7 +544,7 @@ export const outline:UnitCompiler=async (unit,compiler)=>{
         const li=document.createElement('li')
         const a=document.createElement('a')
         li.append(a)
-        a.append(replaceAnchors(await compiler.compileSTDN(indexInfo.unit.children)))
+        a.append(replaceAnchors(await compiler.compileLine(stdnToInlinePlainStringLine(indexInfo.unit.children))))
         a.href=`#${encodeURIComponent(indexInfo.id)}`
         if(indexInfo.index.length===2){
             if(sul!==undefined){
