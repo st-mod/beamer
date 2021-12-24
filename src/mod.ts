@@ -440,47 +440,37 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
         slide.setAttribute('viewBox',`0 0 ${width} ${height}`)
         fo.setAttribute('width','100%')
         fo.setAttribute('height','100%')
-        if(author.length>0){
-            let df=new DocumentFragment()
-            for(let i=0;i<author.length;i++){
-                const unit=author[i]
-                const {abbr}=unit.options
-                if(typeof abbr==='string'){
-                    df.append(new Text(abbr))
-                }else if(typeof abbr==='object'){
-                    df.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)))
-                }else{
-                    df.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children)))
-                }
-                if(i<author.length-1){
-                    df.append(new Text(', '))
-                }
+        for(const unit of author){
+            const span=document.createElement('span')
+            const {abbr}=unit.options
+            if(typeof abbr==='string'){
+                span.append(new Text(abbr))
+            }else if(typeof abbr==='object'){
+                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)))
+            }else{
+                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children)))
             }
-            authorEle.append(df)
+            authorEle.append(span)
         }
         if(title!==undefined){
             const {abbr}=title.options
-            let df:DocumentFragment|Text
             if(typeof abbr==='string'){
-                df=new Text(abbr)
+                titleEle.append(new Text(abbr))
             }else if(typeof abbr==='object'){
-                df=await compiler.compileLine(stdnToInlinePlainStringLine(abbr))
+                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)))
             }else{
-                df=await compiler.compileLine(stdnToInlinePlainStringLine(title.children))
+                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(title.children)))
             }
-            titleEle.append(df)
         }
         if(date!==undefined){
             const {abbr}=date.options
-            let df:DocumentFragment|Text
             if(typeof abbr==='string'){
-                df=new Text(abbr)
+                dateEle.append(new Text(abbr))
             }else if(typeof abbr==='object'){
-                df=await compiler.compileLine(stdnToInlinePlainStringLine(abbr))
+                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)))
             }else{
-                df=await compiler.compileLine(stdnToInlinePlainStringLine(date.children))
+                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(date.children)))
             }
-            dateEle.append(df)
         }
         pageEle.textContent=page.toString()
         let more=false

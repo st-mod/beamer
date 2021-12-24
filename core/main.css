@@ -52,6 +52,10 @@
     right: 0;
 }
 
+.unit.frame>svg>foreignObject>div>footer>div:first-child>span:not(:last-child)::after {
+    content: ", ";
+}
+
 .unit.frame address {
     font-size: var(--length-font-log);
 }
