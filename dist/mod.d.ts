@@ -8,3 +8,4 @@ export interface SlidableElement {
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare const frame: UnitCompiler;
 export declare const outline: UnitCompiler;
+export declare const h0: UnitCompiler;

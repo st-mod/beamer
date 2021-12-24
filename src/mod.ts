@@ -560,3 +560,8 @@ export const outline:UnitCompiler=async (unit,compiler)=>{
     }
     return ul
 }
+export const h0:UnitCompiler=async (unit,compiler)=>{
+    const element=document.createElement('h1')
+    element.append(await compiler.compileSTDN(unit.children))
+    return element
+}

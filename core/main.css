@@ -73,7 +73,6 @@
     justify-content: center;
 }
 
-.unit.frame .unit.h0,
 .unit.frame h1 {
     border: 0;
     font-size: var(--length-font-title);

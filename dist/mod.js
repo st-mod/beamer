@@ -561,3 +561,8 @@ export const outline = async (unit, compiler) => {
     }
     return ul;
 };
+export const h0 = async (unit, compiler) => {
+    const element = document.createElement('h1');
+    element.append(await compiler.compileSTDN(unit.children));
+    return element;
+};
