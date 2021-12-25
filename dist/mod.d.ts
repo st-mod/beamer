@@ -1,4 +1,4 @@
-import { UnitCompiler } from '@ddu6/stc';
+import { UnitCompiler } from '@ddu6/stc/dist/countext';
 export declare function listen(): void;
 export declare function parseSlideStr(string: string): string[][];
 export interface SlidableElement {
