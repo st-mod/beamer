@@ -1,5 +1,5 @@
-import {STDN,STDNUnit,STDNUnitOptions} from 'stdn'
-import {Compiler,UnitCompiler} from '@ddu6/stc'
+import type {STDN,STDNUnit,STDNUnitOptions} from 'stdn'
+import type {Compiler,UnitCompiler} from '@ddu6/stc'
 import {replaceAnchors} from 'st-std/dist/common'
 type SlideIndexes=(true|undefined)[]
 function parseSlideIndexesStr(string:string){
