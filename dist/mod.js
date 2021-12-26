@@ -1,163 +1,4 @@
-import { lineToInlinePlainString } from '@ddu6/stc/dist/base';
-import { getLastGlobalOption } from '@ddu6/stc/dist/countext';
 import { replaceAnchors } from 'st-std/dist/common';
-const slides = [];
-let index = 0;
-const history = [];
-let historyIndex = -1;
-function go(newIndex) {
-    if (index !== newIndex || historyIndex === -1) {
-        history[++historyIndex] = index = newIndex;
-        history[historyIndex + 1] = undefined;
-    }
-    slides[index].scrollIntoView();
-}
-function up() {
-    go((index - 1 + slides.length) % slides.length);
-}
-function down() {
-    go((index + 1) % slides.length);
-}
-function left() {
-    let result = history[historyIndex - 1];
-    if (result !== undefined) {
-        index = result;
-        historyIndex--;
-        slides[index].scrollIntoView();
-    }
-}
-function right() {
-    let result = history[historyIndex + 1];
-    if (result !== undefined) {
-        index = result;
-        historyIndex++;
-        slides[index].scrollIntoView();
-    }
-}
-function normalize() {
-    for (let i = 0; i < slides.length; i++) {
-        const { bottom } = slides[i].getBoundingClientRect();
-        if (bottom > 1) {
-            go(i);
-            break;
-        }
-    }
-}
-let showing = false;
-function show() {
-    for (let i = 0; i < slides.length; i++) {
-        const { top, height } = slides[i].getBoundingClientRect();
-        if (top + height / 2 >= 0) {
-            document.documentElement.classList.add('showing');
-            go(i);
-            showing = true;
-            break;
-        }
-    }
-}
-function exit() {
-    showing = false;
-    document.documentElement.classList.remove('showing');
-    go(index);
-}
-export function listen() {
-    addEventListener('keydown', e => {
-        if (slides.length === 0) {
-            return;
-        }
-        if (e.key === 'Enter') {
-            show();
-            return;
-        }
-        if (!showing) {
-            return;
-        }
-        if (e.key === 'Escape') {
-            exit();
-            return;
-        }
-        if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-            e.preventDefault();
-            up();
-            return;
-        }
-        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-            e.preventDefault();
-            down();
-            return;
-        }
-        if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            left();
-            return;
-        }
-        if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            right();
-            return;
-        }
-    });
-    addEventListener('scroll', () => {
-        if (showing) {
-            normalize();
-        }
-    });
-}
-function findUnit(tag, stdn) {
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'string') {
-                continue;
-            }
-            if (unit.tag === tag) {
-                return unit;
-            }
-            for (const key of Object.keys(unit.options)) {
-                const val = unit.options[key];
-                if (typeof val === 'object') {
-                    const result = findUnit(tag, val);
-                    if (result !== undefined) {
-                        return result;
-                    }
-                }
-            }
-            const result = findUnit(tag, unit.children);
-            if (result !== undefined) {
-                return result;
-            }
-        }
-    }
-}
-function findUnits(tag, stdn) {
-    const out = [];
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'string') {
-                continue;
-            }
-            if (unit.tag === tag) {
-                out.push(unit);
-            }
-            for (const key of Object.keys(unit.options)) {
-                const val = unit.options[key];
-                if (typeof val === 'object') {
-                    out.push(...findUnits(tag, val));
-                }
-            }
-            out.push(...findUnits(tag, unit.children));
-        }
-    }
-    return out;
-}
-function stdnToInlinePlainStringLine(stdn) {
-    for (const line of stdn) {
-        const string = lineToInlinePlainString(line);
-        if (string.length > 0) {
-            return line;
-        }
-    }
-    return [];
-}
 function parseSlideIndexesStr(string) {
     const array = [];
     for (const item of string.trim().split(/\s+/)) {
@@ -282,9 +123,61 @@ function removeAfter(node, parent) {
         node = node.parentNode;
     }
 }
-let width = 1920;
-let height = 1080;
-let whset = false;
+function findUnit(tag, stdn) {
+    for (const line of stdn) {
+        for (const unit of line) {
+            if (typeof unit === 'string') {
+                continue;
+            }
+            if (unit.tag === tag) {
+                return unit;
+            }
+            for (const key of Object.keys(unit.options)) {
+                const val = unit.options[key];
+                if (typeof val === 'object') {
+                    const result = findUnit(tag, val);
+                    if (result !== undefined) {
+                        return result;
+                    }
+                }
+            }
+            const result = findUnit(tag, unit.children);
+            if (result !== undefined) {
+                return result;
+            }
+        }
+    }
+}
+function findUnits(tag, stdn) {
+    const out = [];
+    for (const line of stdn) {
+        for (const unit of line) {
+            if (typeof unit === 'string') {
+                continue;
+            }
+            if (unit.tag === tag) {
+                out.push(unit);
+            }
+            for (const key of Object.keys(unit.options)) {
+                const val = unit.options[key];
+                if (typeof val === 'object') {
+                    out.push(...findUnits(tag, val));
+                }
+            }
+            out.push(...findUnits(tag, unit.children));
+        }
+    }
+    return out;
+}
+function stdnToInlinePlainStringLine(stdn, compiler) {
+    for (const line of stdn) {
+        const string = compiler.base.lineToInlinePlainString(line);
+        if (string.length > 0) {
+            return line;
+        }
+    }
+    return [];
+}
 function parseLength(string) {
     if (string.endsWith('px')) {
         return Number(string.slice(0, -2));
@@ -306,6 +199,111 @@ function parseLength(string) {
     }
     return NaN;
 }
+const slides = [];
+let index = 0;
+const history = [];
+let historyIndex = -1;
+function go(newIndex) {
+    if (index !== newIndex || historyIndex === -1) {
+        history[++historyIndex] = index = newIndex;
+        history[historyIndex + 1] = undefined;
+    }
+    slides[index].scrollIntoView();
+}
+function up() {
+    go((index - 1 + slides.length) % slides.length);
+}
+function down() {
+    go((index + 1) % slides.length);
+}
+function left() {
+    let result = history[historyIndex - 1];
+    if (result !== undefined) {
+        index = result;
+        historyIndex--;
+        slides[index].scrollIntoView();
+    }
+}
+function right() {
+    let result = history[historyIndex + 1];
+    if (result !== undefined) {
+        index = result;
+        historyIndex++;
+        slides[index].scrollIntoView();
+    }
+}
+function normalize() {
+    for (let i = 0; i < slides.length; i++) {
+        const { bottom } = slides[i].getBoundingClientRect();
+        if (bottom > 1) {
+            go(i);
+            break;
+        }
+    }
+}
+let showing = false;
+function show() {
+    for (let i = 0; i < slides.length; i++) {
+        const { top, height } = slides[i].getBoundingClientRect();
+        if (top + height / 2 >= 0) {
+            document.documentElement.classList.add('showing');
+            go(i);
+            showing = true;
+            break;
+        }
+    }
+}
+function exit() {
+    showing = false;
+    document.documentElement.classList.remove('showing');
+    go(index);
+}
+export function listen() {
+    addEventListener('keydown', e => {
+        if (slides.length === 0) {
+            return;
+        }
+        if (e.key === 'Enter') {
+            show();
+            return;
+        }
+        if (!showing) {
+            return;
+        }
+        if (e.key === 'Escape') {
+            exit();
+            return;
+        }
+        if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            up();
+            return;
+        }
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+            e.preventDefault();
+            down();
+            return;
+        }
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            left();
+            return;
+        }
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            right();
+            return;
+        }
+    });
+    addEventListener('scroll', () => {
+        if (showing) {
+            normalize();
+        }
+    });
+}
+let width = 1920;
+let height = 1080;
+let whset = false;
 function setWidthAndHeight(string) {
     if (string.endsWith(' landscape')) {
         setWidthAndHeight(string.slice(0, -10).trim());
@@ -389,28 +387,32 @@ function setSize(option) {
     setWidthAndHeight(option);
     style.textContent = `@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height * 7 / 9}px}`;
 }
-let title;
-let author = [];
-let date;
-let page = 0;
+const compilerToEnv = new Map();
 export const frame = async (unit, compiler) => {
     if (!whset) {
         whset = true;
-        setSize(getLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
+        setSize(compiler.extractor.extractLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
+    }
+    let env = compilerToEnv.get(compiler);
+    if (env === undefined) {
+        compilerToEnv.set(compiler, env = {
+            author: [],
+            page: 0
+        });
     }
     const titleUnit = findUnit('title', unit.children);
     if (titleUnit !== undefined) {
-        title = titleUnit;
+        env.title = titleUnit;
     }
     const authorUnits = findUnits('author', unit.children);
     if (authorUnits.length > 0) {
-        author = authorUnits;
+        env.author = authorUnits;
     }
     const dateUnit = findUnit('date', unit.children);
     if (dateUnit !== undefined) {
-        date = dateUnit;
+        env.date = dateUnit;
     }
-    page++;
+    env.page++;
     const element = document.createElement('div');
     for (let i = 0;; i++) {
         const slide = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -422,6 +424,9 @@ export const frame = async (unit, compiler) => {
         const titleEle = document.createElement('div');
         const dateEle = document.createElement('div');
         const pageEle = document.createElement('div');
+        slide.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        fo.setAttribute('width', '100%');
+        fo.setAttribute('height', '100%');
         element.append(slide);
         slide.append(fo);
         fo.append(container);
@@ -433,48 +438,45 @@ export const frame = async (unit, compiler) => {
         footer.append(dateEle);
         footer.append(pageEle);
         slides.push(slide);
-        slide.setAttribute('viewBox', `0 0 ${width} ${height}`);
-        fo.setAttribute('width', '100%');
-        fo.setAttribute('height', '100%');
-        for (const unit of author) {
+        for (const unit of env.author) {
             const span = document.createElement('span');
             const { abbr } = unit.options;
             if (typeof abbr === 'string') {
                 span.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)));
+                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)));
             }
             else {
-                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children)));
+                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children, compiler)));
             }
             authorEle.append(span);
         }
-        if (title !== undefined) {
-            const { abbr } = title.options;
+        if (env.title !== undefined) {
+            const { abbr } = env.title.options;
             if (typeof abbr === 'string') {
                 titleEle.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)));
+                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)));
             }
             else {
-                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(title.children)));
+                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(env.title.children, compiler)));
             }
         }
-        if (date !== undefined) {
-            const { abbr } = date.options;
+        if (env.date !== undefined) {
+            const { abbr } = env.date.options;
             if (typeof abbr === 'string') {
                 dateEle.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr)));
+                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)));
             }
             else {
-                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(date.children)));
+                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(env.date.children, compiler)));
             }
         }
-        pageEle.textContent = page.toString();
+        pageEle.textContent = env.page.toString();
         let more = false;
         const pause = main.querySelectorAll('.unit.pause')[i];
         if (pause !== undefined) {
@@ -506,7 +508,7 @@ export const outline = async (unit, compiler) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
         li.append(a);
-        a.append(replaceAnchors(await compiler.compileLine(stdnToInlinePlainStringLine(indexInfo.unit.children))));
+        a.append(replaceAnchors(await compiler.compileLine(stdnToInlinePlainStringLine(indexInfo.unit.children, compiler))));
         a.href = `#${encodeURIComponent(indexInfo.id)}`;
         if (indexInfo.index.length === 2) {
             if (sul !== undefined) {
