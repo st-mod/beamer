@@ -32,3 +32,7 @@
     font-style: italic;
     font-weight: bold;
 }
+
+.unit.demo>:first-child {
+    --length-font-log: .45em;
+}
