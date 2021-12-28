@@ -149,6 +149,7 @@ function setSize({width,height}:Size,root:Compiler['context']['root']){
         }
         
         @page {
+            margin: 0;
             size: ${width}px ${height}px;
         }
         

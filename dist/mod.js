@@ -141,6 +141,7 @@ function setSize({ width, height }, root) {
         }
         
         @page {
+            margin: 0;
             size: ${width}px ${height}px;
         }
         
