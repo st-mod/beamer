@@ -1,4 +1,143 @@
 import { replaceAnchors } from 'st-std/dist/common';
+export const config = {
+    listen: false
+};
+const defaultWidth = 1920;
+const defaultHeight = 1080;
+export function parseLength(option) {
+    if (typeof option !== 'string') {
+        return NaN;
+    }
+    if (option.endsWith('px')) {
+        return Number(option.slice(0, -2));
+    }
+    if (option.endsWith('cm')) {
+        return Number(option.slice(0, -2)) * 96 / 2.54;
+    }
+    if (option.endsWith('mm')) {
+        return Number(option.slice(0, -2)) * 96 / 25.4;
+    }
+    if (option.endsWith('in')) {
+        return Number(option.slice(0, -2)) * 96;
+    }
+    if (option.endsWith('pc')) {
+        return Number(option.slice(0, -2)) * 16;
+    }
+    if (option.endsWith('pt')) {
+        return Number(option.slice(0, -2)) * 4 / 3;
+    }
+    return NaN;
+}
+export function parseSize(option) {
+    if (typeof option !== 'string') {
+        return {
+            width: defaultWidth,
+            height: defaultHeight
+        };
+    }
+    if (option.endsWith(' landscape')) {
+        const { width, height } = parseSize(option.slice(0, -10).trim());
+        return {
+            width: height,
+            height: width
+        };
+    }
+    if (option.endsWith(' portrait')) {
+        return parseSize(option.slice(0, -9).trim());
+    }
+    if (option === 'A5') {
+        return {
+            width: parseLength('148mm'),
+            height: parseLength('210mm')
+        };
+    }
+    if (option === 'A4') {
+        return {
+            width: parseLength('210mm'),
+            height: parseLength('297mm')
+        };
+    }
+    if (option === 'A3') {
+        return {
+            width: parseLength('297mm'),
+            height: parseLength('420mm')
+        };
+    }
+    if (option === 'B5') {
+        return {
+            width: parseLength('176mm'),
+            height: parseLength('250mm')
+        };
+    }
+    if (option === 'B4') {
+        return {
+            width: parseLength('250mm'),
+            height: parseLength('353mm')
+        };
+    }
+    if (option === 'JIS-B5') {
+        return {
+            width: parseLength('182mm'),
+            height: parseLength('257mm')
+        };
+    }
+    if (option === 'JIS-B4') {
+        return {
+            width: parseLength('257mm'),
+            height: parseLength('364mm')
+        };
+    }
+    if (option === 'letter') {
+        return {
+            width: parseLength('8.5in'),
+            height: parseLength('11in')
+        };
+    }
+    if (option === 'legal') {
+        return {
+            width: parseLength('8.5in'),
+            height: parseLength('14in')
+        };
+    }
+    if (option === 'ledger') {
+        return {
+            width: parseLength('11in'),
+            height: parseLength('17in')
+        };
+    }
+    const [width0, height0] = option.trim().split(/\s+/, 2).map(parseLength);
+    if (isFinite(width0) && width0 > 0) {
+        if (height0 === undefined) {
+            return {
+                width: width0,
+                height: width0
+            };
+        }
+        if (isFinite(height0) && height0 > 0) {
+            return {
+                width: width0,
+                height: height0
+            };
+        }
+        return {
+            width: width0,
+            height: defaultHeight
+        };
+    }
+    return {
+        width: defaultWidth,
+        height: defaultHeight
+    };
+}
+function setSize({ width, height }, root) {
+    const style = document.createElement('style');
+    style.textContent = `@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height * 7 / 9}px}`;
+    if (root instanceof ShadowRoot) {
+        root.append(style);
+        return;
+    }
+    root.document.head.append(style);
+}
 function parseSlideIndexesStr(string) {
     const array = [];
     for (const item of string.trim().split(/\s+/)) {
@@ -178,87 +317,70 @@ function stdnToInlinePlainStringLine(stdn, compiler) {
     }
     return [];
 }
-function parseLength(string) {
-    if (string.endsWith('px')) {
-        return Number(string.slice(0, -2));
+let listened = false;
+function listen(slides) {
+    if (listened) {
+        return;
     }
-    if (string.endsWith('cm')) {
-        return Number(string.slice(0, -2)) * 96 / 2.54;
-    }
-    if (string.endsWith('mm')) {
-        return Number(string.slice(0, -2)) * 96 / 25.4;
-    }
-    if (string.endsWith('in')) {
-        return Number(string.slice(0, -2)) * 96;
-    }
-    if (string.endsWith('pc')) {
-        return Number(string.slice(0, -2)) * 16;
-    }
-    if (string.endsWith('pt')) {
-        return Number(string.slice(0, -2)) * 4 / 3;
-    }
-    return NaN;
-}
-const slides = [];
-let index = 0;
-const history = [];
-let historyIndex = -1;
-function go(newIndex) {
-    if (index !== newIndex || historyIndex === -1) {
-        history[++historyIndex] = index = newIndex;
-        history[historyIndex + 1] = undefined;
-    }
-    slides[index].scrollIntoView();
-}
-function up() {
-    go((index - 1 + slides.length) % slides.length);
-}
-function down() {
-    go((index + 1) % slides.length);
-}
-function left() {
-    let result = history[historyIndex - 1];
-    if (result !== undefined) {
-        index = result;
-        historyIndex--;
+    listened = true;
+    let index = 0;
+    const history = [];
+    let historyIndex = -1;
+    function go(newIndex) {
+        if (index !== newIndex || historyIndex === -1) {
+            history[++historyIndex] = index = newIndex;
+            history[historyIndex + 1] = undefined;
+        }
         slides[index].scrollIntoView();
     }
-}
-function right() {
-    let result = history[historyIndex + 1];
-    if (result !== undefined) {
-        index = result;
-        historyIndex++;
-        slides[index].scrollIntoView();
+    function up() {
+        go((index - 1 + slides.length) % slides.length);
     }
-}
-function normalize() {
-    for (let i = 0; i < slides.length; i++) {
-        const { bottom } = slides[i].getBoundingClientRect();
-        if (bottom > 1) {
-            go(i);
-            break;
+    function down() {
+        go((index + 1) % slides.length);
+    }
+    function left() {
+        let result = history[historyIndex - 1];
+        if (result !== undefined) {
+            index = result;
+            historyIndex--;
+            slides[index].scrollIntoView();
         }
     }
-}
-let showing = false;
-function show() {
-    for (let i = 0; i < slides.length; i++) {
-        const { top, height } = slides[i].getBoundingClientRect();
-        if (top + height / 2 >= 0) {
-            document.documentElement.classList.add('showing');
-            go(i);
-            showing = true;
-            break;
+    function right() {
+        let result = history[historyIndex + 1];
+        if (result !== undefined) {
+            index = result;
+            historyIndex++;
+            slides[index].scrollIntoView();
         }
     }
-}
-function exit() {
-    showing = false;
-    document.documentElement.classList.remove('showing');
-    go(index);
-}
-export function listen() {
+    function normalize() {
+        for (let i = 0; i < slides.length; i++) {
+            const { bottom } = slides[i].getBoundingClientRect();
+            if (bottom > 1) {
+                go(i);
+                break;
+            }
+        }
+    }
+    let showing = false;
+    function show() {
+        for (let i = 0; i < slides.length; i++) {
+            const { top, height } = slides[i].getBoundingClientRect();
+            if (top + height / 2 >= 0) {
+                document.documentElement.classList.add('showing');
+                go(i);
+                showing = true;
+                break;
+            }
+        }
+    }
+    function exit() {
+        showing = false;
+        document.documentElement.classList.remove('showing');
+        go(index);
+    }
     addEventListener('keydown', e => {
         if (slides.length === 0) {
             return;
@@ -301,104 +423,22 @@ export function listen() {
         }
     });
 }
-let width = 1920;
-let height = 1080;
-let whset = false;
-function setWidthAndHeight(string) {
-    if (string.endsWith(' landscape')) {
-        setWidthAndHeight(string.slice(0, -10).trim());
-        const tmp = width;
-        width = height;
-        height = tmp;
-        return;
-    }
-    if (string.endsWith(' portrait')) {
-        setWidthAndHeight(string.slice(0, -9).trim());
-        return;
-    }
-    if (string === 'A5') {
-        width = parseLength('148mm');
-        height = parseLength('210mm');
-        return;
-    }
-    if (string === 'A4') {
-        width = parseLength('210mm');
-        height = parseLength('297mm');
-        return;
-    }
-    if (string === 'A3') {
-        width = parseLength('297mm');
-        height = parseLength('420mm');
-        return;
-    }
-    if (string === 'B5') {
-        width = parseLength('176mm');
-        height = parseLength('250mm');
-        return;
-    }
-    if (string === 'B4') {
-        width = parseLength('250mm');
-        height = parseLength('353mm');
-        return;
-    }
-    if (string === 'JIS-B5') {
-        width = parseLength('182mm');
-        height = parseLength('257mm');
-        return;
-    }
-    if (string === 'JIS-B4') {
-        width = parseLength('257mm');
-        height = parseLength('364mm');
-        return;
-    }
-    if (string === 'letter') {
-        width = parseLength('8.5in');
-        height = parseLength('11in');
-        return;
-    }
-    if (string === 'legal') {
-        width = parseLength('8.5in');
-        height = parseLength('14in');
-        return;
-    }
-    if (string === 'ledger') {
-        width = parseLength('11in');
-        height = parseLength('17in');
-        return;
-    }
-    const [width0, height0] = string.trim().split(/\s+/, 2).map(parseLength);
-    if (isFinite(width0) && width0 > 0) {
-        width = width0;
-        if (height0 === undefined) {
-            height = width0;
-            return;
-        }
-        if (isFinite(height0) && height0 > 0) {
-            height = height0;
-        }
-    }
-}
-function setSize(option) {
-    if (typeof option !== 'string') {
-        return;
-    }
-    const style = document.createElement('style');
-    document.head.append(style);
-    setWidthAndHeight(option);
-    style.textContent = `@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height * 7 / 9}px}`;
-}
 const compilerToEnv = new Map();
 export const frame = async (unit, compiler) => {
-    if (!whset) {
-        whset = true;
-        setSize(compiler.extractor.extractLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
-    }
     let env = compilerToEnv.get(compiler);
     if (env === undefined) {
+        const size = parseSize(compiler.extractor.extractLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
         compilerToEnv.set(compiler, env = {
+            width: size.width,
+            height: size.height,
+            slides: [],
             author: [],
             page: 0
         });
+        setSize(size, compiler.context.root);
+        if (config.listen && compiler.context.root === window) {
+            listen(env.slides);
+        }
     }
     const titleUnit = findUnit('title', unit.children);
     if (titleUnit !== undefined) {
@@ -424,7 +464,7 @@ export const frame = async (unit, compiler) => {
         const titleEle = document.createElement('div');
         const dateEle = document.createElement('div');
         const pageEle = document.createElement('div');
-        slide.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        slide.setAttribute('viewBox', `0 0 ${env.width} ${env.height}`);
         fo.setAttribute('width', '100%');
         fo.setAttribute('height', '100%');
         element.append(slide);
@@ -437,7 +477,7 @@ export const frame = async (unit, compiler) => {
         footer.append(titleEle);
         footer.append(dateEle);
         footer.append(pageEle);
-        slides.push(slide);
+        env.slides.push(slide);
         for (const unit of env.author) {
             const span = document.createElement('span');
             const { abbr } = unit.options;
