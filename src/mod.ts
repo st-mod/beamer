@@ -113,22 +113,22 @@ export function parseSize(option:STDNUnitOptions[string]):Size{
             height:parseLength('17in')
         }
     }
-    const [width0,height0]=option.trim().split(/\s+/,2).map(parseLength)
-    if(isFinite(width0)&&width0>0){
-        if(height0===undefined){
+    const [width,height]=option.trim().split(/\s+/,2).map(parseLength)
+    if(isFinite(width)&&width>0){
+        if(height===undefined){
             return {
-                width:width0,
-                height:width0
+                width,
+                height:width
             }
         }
-        if(isFinite(height0)&&height0>0){
+        if(isFinite(height)&&height>0){
             return {
-                width:width0,
-                height:height0
+                width,
+                height
             }
         }
         return {
-            width:width0,
+            width,
             height:defaultHeight
         }
     }
