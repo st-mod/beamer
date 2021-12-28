@@ -10,7 +10,6 @@
     display: grid;
     font-size: 32px;
     grid-template-rows: 0 1fr 0 min-content;
-    height: 1080px;
 }
 
 .unit.frame.vcenter>svg>foreignObject>div {
@@ -99,7 +98,6 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    max-height: 840px;
 }
 
 .unit.frame .unit.outline.compact>li {

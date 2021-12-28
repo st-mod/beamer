@@ -1,6 +1,7 @@
 import { replaceAnchors } from 'st-std/dist/common';
 export const config = {
-    listen: false
+    listen: false,
+    page: false
 };
 const defaultWidth = 1920;
 const defaultHeight = 1080;
@@ -130,9 +131,27 @@ export function parseSize(option) {
     };
 }
 function setSize({ width, height }, root) {
+    const shadow = root instanceof ShadowRoot;
     const style = document.createElement('style');
-    style.textContent = `@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height * 7 / 9}px}`;
-    if (root instanceof ShadowRoot) {
+    style.textContent = `${config.page && !shadow ? `@media print {
+            .unit.frame>svg {
+                border: 0;
+                margin: 0;
+            }
+        }
+        
+        @page {
+            size: ${width}px ${height}px;
+        }
+        
+        ` : ''}.unit.frame>svg>foreignObject>div {
+        height: ${height}px;
+    }
+    
+    .unit.frame .unit.outline.compact {
+        max-height: ${height * 7 / 9}px;
+    }`;
+    if (shadow) {
         root.append(style);
         return;
     }
@@ -317,12 +336,10 @@ function stdnToInlinePlainStringLine(stdn, compiler) {
     }
     return [];
 }
-let listened = false;
-function listen(slides) {
-    if (listened) {
+function listen(slides, root) {
+    if (!config.listen || root instanceof ShadowRoot) {
         return;
     }
-    listened = true;
     let index = 0;
     const history = [];
     let historyIndex = -1;
@@ -381,7 +398,7 @@ function listen(slides) {
         document.documentElement.classList.remove('showing');
         go(index);
     }
-    addEventListener('keydown', e => {
+    root.addEventListener('keydown', e => {
         if (slides.length === 0) {
             return;
         }
@@ -417,7 +434,7 @@ function listen(slides) {
             return;
         }
     });
-    addEventListener('scroll', () => {
+    root.addEventListener('scroll', () => {
         if (showing) {
             normalize();
         }
@@ -436,9 +453,7 @@ export const frame = async (unit, compiler) => {
             page: 0
         });
         setSize(size, compiler.context.root);
-        if (config.listen && compiler.context.root === window) {
-            listen(env.slides);
-        }
+        listen(env.slides, compiler.context.root);
     }
     const titleUnit = findUnit('title', unit.children);
     if (titleUnit !== undefined) {

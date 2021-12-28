@@ -36,14 +36,4 @@ html.showing .unit.frame>svg {
     body>.lr-struct>button {
         display: none;
     }
-    
-    .unit.frame>svg {
-        border: 0;
-        margin: 0;
-    }
-}
-
-@page {
-    margin: 0;
-    size: 1920px 1080px;
 }

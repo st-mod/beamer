@@ -2,6 +2,7 @@ import type { STDNUnitOptions } from 'stdn';
 import type { UnitCompiler } from '@ddu6/stc';
 export declare const config: {
     listen: boolean;
+    page: boolean;
 };
 interface Size {
     width: number;

@@ -2,7 +2,8 @@ import type {STDN,STDNUnit,STDNUnitOptions} from 'stdn'
 import type {Compiler,UnitCompiler} from '@ddu6/stc'
 import {replaceAnchors} from 'st-std/dist/common'
 export const config={
-    listen:false
+    listen:false,
+    page:false
 }
 const defaultWidth=1920
 const defaultHeight=1080
@@ -137,9 +138,29 @@ export function parseSize(option:STDNUnitOptions[string]):Size{
     }
 }
 function setSize({width,height}:Size,root:Compiler['context']['root']){
+    const shadow=root instanceof ShadowRoot
     const style=document.createElement('style')
-    style.textContent=`@page{size:${width}px ${height}px}.unit.frame>svg>foreignObject>div{height:${height}px}.unit.frame .unit.outline.compact{max-height:${height*7/9}px}`
-    if(root instanceof ShadowRoot){
+    style.textContent=`${
+        config.page&&!shadow?`@media print {
+            .unit.frame>svg {
+                border: 0;
+                margin: 0;
+            }
+        }
+        
+        @page {
+            size: ${width}px ${height}px;
+        }
+        
+        `:''
+    }.unit.frame>svg>foreignObject>div {
+        height: ${height}px;
+    }
+    
+    .unit.frame .unit.outline.compact {
+        max-height: ${height*7/9}px;
+    }`
+    if(shadow){
         root.append(style)
         return
     }
@@ -328,12 +349,10 @@ function stdnToInlinePlainStringLine(stdn:STDN,compiler:Compiler){
     }
     return []
 }
-let listened=false
-function listen(slides:SVGElement[]){
-    if(listened){
+function listen(slides:SVGElement[],root:Compiler['context']['root']){
+    if(!config.listen||root instanceof ShadowRoot){
         return
     }
-    listened=true
     let index=0
     const history:(number|undefined)[]=[]
     let historyIndex=-1
@@ -392,7 +411,7 @@ function listen(slides:SVGElement[]){
         document.documentElement.classList.remove('showing')
         go(index)
     }
-    addEventListener('keydown',e=>{
+    root.addEventListener('keydown',e=>{
         if(slides.length===0){
             return
         }
@@ -428,7 +447,7 @@ function listen(slides:SVGElement[]){
             return
         }
     })
-    addEventListener('scroll',()=>{
+    root.addEventListener('scroll',()=>{
         if(showing){
             normalize()
         }
@@ -456,9 +475,7 @@ export const frame:UnitCompiler=async (unit,compiler)=>{
             page:0
         })
         setSize(size,compiler.context.root)
-        if(config.listen&&compiler.context.root===window){
-            listen(env.slides)
-        }
+        listen(env.slides,compiler.context.root)
     }
     const titleUnit=findUnit('title',unit.children)
     if(titleUnit!==undefined){
