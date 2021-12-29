@@ -125,6 +125,12 @@ export function parseSize(option) {
             height: defaultHeight
         };
     }
+    if (isFinite(height) && height > 0) {
+        return {
+            width: defaultWidth,
+            height
+        };
+    }
     return {
         width: defaultWidth,
         height: defaultHeight
