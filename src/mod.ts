@@ -137,7 +137,12 @@ export function parseSize(option:STDNUnitOptions[string]):Size{
         height:defaultHeight
     }
 }
+const rootToSized=new Map<Compiler['context']['root'],true|undefined>()
 function setSize({width,height}:Size,root:Compiler['context']['root']){
+    if(rootToSized.get(root)){
+        return
+    }
+    rootToSized.set(root,true)
     const shadow=root instanceof ShadowRoot
     const style=document.createElement('style')
     style.textContent=`${
@@ -350,10 +355,12 @@ function stdnToInlinePlainStringLine(stdn:STDN,compiler:Compiler){
     }
     return []
 }
+const rootToListened=new Map<Compiler['context']['root'],true|undefined>()
 function listen(slides:SVGElement[],root:Compiler['context']['root']){
-    if(!config.listen||root instanceof ShadowRoot){
+    if(!config.listen||root instanceof ShadowRoot||rootToListened.get(root)){
         return
     }
+    rootToListened.set(root,true)
     let index=0
     const history:(number|undefined)[]=[]
     let historyIndex=-1

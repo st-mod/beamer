@@ -130,7 +130,12 @@ export function parseSize(option) {
         height: defaultHeight
     };
 }
+const rootToSized = new Map();
 function setSize({ width, height }, root) {
+    if (rootToSized.get(root)) {
+        return;
+    }
+    rootToSized.set(root, true);
     const shadow = root instanceof ShadowRoot;
     const style = document.createElement('style');
     style.textContent = `${config.page && !shadow ? `@media print {
@@ -337,10 +342,12 @@ function stdnToInlinePlainStringLine(stdn, compiler) {
     }
     return [];
 }
+const rootToListened = new Map();
 function listen(slides, root) {
-    if (!config.listen || root instanceof ShadowRoot) {
+    if (!config.listen || root instanceof ShadowRoot || rootToListened.get(root)) {
         return;
     }
+    rootToListened.set(root, true);
     let index = 0;
     const history = [];
     let historyIndex = -1;
