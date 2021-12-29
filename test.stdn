@@ -156,6 +156,7 @@
     {compile-with h2, div [Some Source Code]}
     {demo [
         {css-src main.css, ucs-src ucs.js, global []}
+        {css-src addon/main.css, global []}
         {global, size 1280px 960px, frame []}
         {global, compile-with index, block, letter []}
         {frame [
