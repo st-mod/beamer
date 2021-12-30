@@ -354,6 +354,7 @@ function listen(slides, root) {
         return;
     }
     rootToListened.set(root, true);
+    const staticRoot = root;
     let index = 0;
     const history = [];
     let historyIndex = -1;
@@ -400,7 +401,7 @@ function listen(slides, root) {
         for (let i = 0; i < slides.length; i++) {
             const { top, height } = slides[i].getBoundingClientRect();
             if (top + height / 2 >= 0) {
-                document.documentElement.classList.add('showing');
+                staticRoot.document.documentElement.classList.add('showing');
                 go(i);
                 showing = true;
                 break;
@@ -409,7 +410,7 @@ function listen(slides, root) {
     }
     function exit() {
         showing = false;
-        document.documentElement.classList.remove('showing');
+        staticRoot.document.documentElement.classList.remove('showing');
         go(index);
     }
     root.addEventListener('keydown', e => {
