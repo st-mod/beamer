@@ -145,24 +145,20 @@ function setSize({ width, height }, root) {
     const shadow = root instanceof ShadowRoot;
     const style = document.createElement('style');
     style.textContent = `${config.page && !shadow ? `@media print {
-            .unit.frame>svg {
-                border: 0;
-                margin: 0;
-            }
-        }
-        
-        @page {
-            margin: 0;
-            size: ${width}px ${height}px;
-        }
-        
-        ` : ''}.unit.frame>svg>foreignObject>div {
-        height: ${height}px;
+    .unit.frame>svg {
+        border: 0;
+        margin: 0;
     }
-    
-    .unit.frame .unit.outline.compact {
-        max-height: ${height * 7 / 9}px;
-    }`;
+}
+
+@page {
+    margin: 0;
+    size: ${width}px ${height}px;
+}
+
+` : ''}.unit.frame>svg>foreignObject>div {
+    height: ${height}px;
+}`;
     if (shadow) {
         root.append(style);
         return;
@@ -595,12 +591,6 @@ export const outline = async (unit, compiler) => {
         if (pause && count1 > 1) {
             li.dataset.slide = `${count1}-`;
         }
-    }
-    if (count2 > 12) {
-        ul.classList.add('compact');
-    }
-    if (count2 > 24) {
-        ul.classList.add('very-compact');
     }
     return ul;
 };
