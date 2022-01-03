@@ -136,15 +136,30 @@ export function parseSize(option) {
         height: defaultHeight
     };
 }
-const rootToSized = new Map();
-function setSize({ width, height }, root) {
-    if (rootToSized.get(root)) {
+const shadowToSized = new Map();
+function setShadowSize(height, root) {
+    if (shadowToSized.get(root)) {
         return;
     }
-    rootToSized.set(root, true);
-    const shadow = root instanceof ShadowRoot;
+    shadowToSized.set(root, true);
     const style = document.createElement('style');
-    style.textContent = `${config.page && !shadow ? `@media print {
+    style.textContent = `.unit.frame>svg>foreignObject>div {
+    height: ${height}px;
+}`;
+    root.append(style);
+}
+let sized = false;
+function setSize({ width, height }, root) {
+    if (root !== undefined) {
+        setShadowSize(height, root);
+        return;
+    }
+    if (sized) {
+        return;
+    }
+    sized = true;
+    const style = document.createElement('style');
+    style.textContent = `${config.page ? `@media print {
     .unit.frame>svg {
         border: 0;
         margin: 0;
@@ -159,11 +174,7 @@ function setSize({ width, height }, root) {
 ` : ''}.unit.frame>svg>foreignObject>div {
     height: ${height}px;
 }`;
-    if (shadow) {
-        root.append(style);
-        return;
-    }
-    root.document.head.append(style);
+    document.head.append(style);
 }
 function parseSlideIndexesStr(string) {
     const array = [];
@@ -344,13 +355,12 @@ function stdnToInlinePlainStringLine(stdn, compiler) {
     }
     return [];
 }
-const rootToListened = new Map();
+let listened = false;
 function listen(slides, root) {
-    if (!config.listen || root instanceof ShadowRoot || rootToListened.get(root)) {
+    if (listened || !config.listen || root !== undefined) {
         return;
     }
-    rootToListened.set(root, true);
-    const staticRoot = root;
+    listened = true;
     let index = 0;
     const history = [];
     let historyIndex = -1;
@@ -397,7 +407,7 @@ function listen(slides, root) {
         for (let i = 0; i < slides.length; i++) {
             const { top, height } = slides[i].getBoundingClientRect();
             if (top + height / 2 >= 0) {
-                staticRoot.document.documentElement.classList.add('showing');
+                document.documentElement.classList.add('showing');
                 go(i);
                 showing = true;
                 break;
@@ -406,10 +416,10 @@ function listen(slides, root) {
     }
     function exit() {
         showing = false;
-        staticRoot.document.documentElement.classList.remove('showing');
+        document.documentElement.classList.remove('showing');
         go(index);
     }
-    root.addEventListener('keydown', e => {
+    addEventListener('keydown', e => {
         if (slides.length === 0) {
             return;
         }
@@ -445,7 +455,7 @@ function listen(slides, root) {
             return;
         }
     });
-    root.addEventListener('scroll', () => {
+    addEventListener('scroll', () => {
         if (showing) {
             normalize();
         }

@@ -143,15 +143,30 @@ export function parseSize(option: STDNUnitOptions[string]): Size {
         height: defaultHeight
     }
 }
-const rootToSized = new Map<Compiler['context']['root'], true | undefined>()
-function setSize({width, height}: Size, root: Compiler['context']['root']) {
-    if (rootToSized.get(root)) {
+const shadowToSized = new Map<ShadowRoot, true | undefined>()
+function setShadowSize(height: number, root: ShadowRoot) {
+    if (shadowToSized.get(root)) {
         return
     }
-    rootToSized.set(root, true)
-    const shadow = root instanceof ShadowRoot
+    shadowToSized.set(root, true)
     const style = document.createElement('style')
-    style.textContent = `${config.page && !shadow ? `@media print {
+    style.textContent = `.unit.frame>svg>foreignObject>div {
+    height: ${height}px;
+}`
+    root.append(style)
+}
+let sized = false
+function setSize({width, height}: Size, root: Compiler['context']['root']) {
+    if (root !== undefined) {
+        setShadowSize(height, root)
+        return
+    }
+    if (sized) {
+        return
+    }
+    sized = true
+    const style = document.createElement('style')
+    style.textContent = `${config.page ? `@media print {
     .unit.frame>svg {
         border: 0;
         margin: 0;
@@ -166,11 +181,7 @@ function setSize({width, height}: Size, root: Compiler['context']['root']) {
 `: ''}.unit.frame>svg>foreignObject>div {
     height: ${height}px;
 }`
-    if (shadow) {
-        root.append(style)
-        return
-    }
-    root.document.head.append(style)
+    document.head.append(style)
 }
 function parseSlideIndexesStr(string: string) {
     const array: SlideIndexes = []
@@ -355,13 +366,12 @@ function stdnToInlinePlainStringLine(stdn: STDN, compiler: Compiler) {
     }
     return []
 }
-const rootToListened = new Map<Compiler['context']['root'], true | undefined>()
+let listened = false
 function listen(slides: SVGElement[], root: Compiler['context']['root']) {
-    if (!config.listen || root instanceof ShadowRoot || rootToListened.get(root)) {
+    if (listened || !config.listen || root !== undefined) {
         return
     }
-    rootToListened.set(root, true)
-    const staticRoot = root
+    listened = true
     let index = 0
     const history: (number | undefined)[] = []
     let historyIndex = -1
@@ -408,7 +418,7 @@ function listen(slides: SVGElement[], root: Compiler['context']['root']) {
         for (let i = 0; i < slides.length; i++) {
             const {top, height} = slides[i].getBoundingClientRect()
             if (top + height / 2 >= 0) {
-                staticRoot.document.documentElement.classList.add('showing')
+                document.documentElement.classList.add('showing')
                 go(i)
                 showing = true
                 break
@@ -417,10 +427,10 @@ function listen(slides: SVGElement[], root: Compiler['context']['root']) {
     }
     function exit() {
         showing = false
-        staticRoot.document.documentElement.classList.remove('showing')
+        document.documentElement.classList.remove('showing')
         go(index)
     }
-    root.addEventListener('keydown', e => {
+    addEventListener('keydown', e => {
         if (slides.length === 0) {
             return
         }
@@ -456,7 +466,7 @@ function listen(slides: SVGElement[], root: Compiler['context']['root']) {
             return
         }
     })
-    root.addEventListener('scroll', () => {
+    addEventListener('scroll', () => {
         if (showing) {
             normalize()
         }
