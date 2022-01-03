@@ -12,9 +12,3 @@ This is a stdn module for creating slides.
     {li [['Press '{kbd [Escape]}.]]}
 ]}
 []
-{h1 [Import]}
-{lang stdn, code [
-    '{mod beamer, global []}'
-    '{css beamer/addon, global []}'
-]}
-[]

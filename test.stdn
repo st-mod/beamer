@@ -1,6 +1,5 @@
 {mod demo@0.6.5, global []}
 {css-src main.css, ucs-src ucs.js, global []}
-{css-src addon/main.css, global []}
 {css-src test.css, global []}
 {global, no-count, demo []}
 {global, size 1280px 960px, frame []}
@@ -71,16 +70,11 @@
 {global, compile-with index, block, letter []}
 {frame [
     {h2 [An Open Question]}
-    {two [
-        {dl [
-            {dt [Answered Questions]}
-            {dd [How many primes are there?]}
-        ]}
-        {dl [
-            {dt [Open Questions]}
-            {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id goldbach1742, ref []})]]}
-        ]}
-    ]}
+    {dt [Answered Questions]}
+    {dd [How many primes are there?]}
+    []
+    {dt [Open Questions]}
+    {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id goldbach1742, ref []})]]}
     []
     {id goldbach1742, letter [['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']]}
 ]}
@@ -156,21 +150,15 @@
     {compile-with h2, div [Some Source Code]}
     {demo [
         {css-src main.css, ucs-src ucs.js, global []}
-        {css-src addon/main.css, global []}
         {global, size 1280px 960px, frame []}
         {global, compile-with index, block, letter []}
         {frame [
             {h2 [An Open Question]}
-            {two [
-                {dl [
-                    {dt [Answered Questions]}
-                    {dd [How many primes are there?]}
-                ]}
-                {dl [
-                    {dt [Open Questions]}
-                    {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id goldbach1742, ref []})]]}
-                ]}
-            ]}
+            {dt [Answered Questions]}
+            {dd [How many primes are there?]}
+            []
+            {dt [Open Questions]}
+            {dd [['Is every even number greater than 2 the sum of two primes? (see '{ref-id goldbach1742, ref []})]]}
             []
             {id goldbach1742, letter [['Christian Goldbach, '{i ['A problem we should try to solve before the ISPN \'43 deadline']}', Letter to Leonhard Euler (1742).']]}
         ]}

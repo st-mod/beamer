@@ -1,5 +1,0 @@
-.unit.frame .unit.two {
-    display: grid;
-    gap: var(--length-gap);
-    grid-template-columns: 1fr 1fr;
-}
