@@ -136,44 +136,25 @@ export function parseSize(option) {
         height: defaultHeight
     };
 }
-const shadowToStyle = new Map();
-function setShadowSize(height, root) {
-    let style = shadowToStyle.get(root);
-    if (style === undefined) {
-        shadowToStyle.set(root, style = document.createElement('style'));
-    }
-    const css = `.unit.frame>svg>foreignObject>div {
-        height: ${height}px;
-    }`;
-    if (style.textContent !== css) {
-        style.textContent = css;
-    }
-    root.append(style);
-}
 let style;
 function setSize({ width, height }, root) {
-    if (root !== undefined) {
-        setShadowSize(height, root);
+    if (root !== undefined || !config.page) {
         return;
     }
     if (style === undefined) {
         style = document.createElement('style');
     }
-    const css = `${config.page ? `@media print {
-        .unit.frame>svg {
-            border: 0;
-            margin: 0;
-        }
-    }
-    
-    @page {
+    const css = `@media print {
+    .unit.frame>svg {
+        border: 0;
         margin: 0;
-        size: ${width}px ${height}px;
     }
-    
-    ` : ''}.unit.frame>svg>foreignObject>div {
-        height: ${height}px;
-    }`;
+}
+
+@page {
+    margin: 0;
+    size: ${width}px ${height}px;
+}`;
     if (style.textContent !== css) {
         style.textContent = css;
     }
@@ -507,6 +488,7 @@ export const frame = async (unit, compiler) => {
         slide.setAttribute('viewBox', `0 0 ${env.width} ${env.height}`);
         fo.setAttribute('width', '100%');
         fo.setAttribute('height', '100%');
+        container.style.height = `${env.height}px`;
         element.append(slide);
         slide.append(fo);
         fo.append(container);
