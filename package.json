@@ -1,6 +1,6 @@
 {
   "name": "@ddu6/beamer",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "description": "A stdn module for creating slides",
   "main": "dist/mod.js",
   "scripts": {
