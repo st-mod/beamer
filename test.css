@@ -27,12 +27,12 @@
     font-weight: bold;
 }
 
-.unit.code.c4>:nth-child(2)>.content>:first-child,
-.unit.code.c4>:nth-child(5)>.content>:first-child {
+.unit.code.c4>:nth-child(2)>:nth-child(2),
+.unit.code.c4>:nth-child(5)>:nth-child(2) {
     font-style: italic;
     font-weight: bold;
 }
 
-.unit.demo>:first-child {
+.unit.demo>.source {
     --length-font-log: .45em;
 }
