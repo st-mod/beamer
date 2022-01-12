@@ -143,44 +143,47 @@ export function parseSize(option: STDNUnitOptions[string]): Size {
         height: defaultHeight
     }
 }
-const shadowToSized = new Map<ShadowRoot, true | undefined>()
+const shadowToStyle = new Map<ShadowRoot, HTMLStyleElement | undefined>()
 function setShadowSize(height: number, root: ShadowRoot) {
-    if (shadowToSized.get(root)) {
-        return
+    let style = shadowToStyle.get(root)
+    if (style === undefined) {
+        shadowToStyle.set(root, style = document.createElement('style'))
     }
-    shadowToSized.set(root, true)
-    const style = document.createElement('style')
-    style.textContent = `.unit.frame>svg>foreignObject>div {
-    height: ${height}px;
-}`
+    const css = `.unit.frame>svg>foreignObject>div {
+        height: ${height}px;
+    }`
+    if (style.textContent !== css) {
+        style.textContent = css
+    }
     root.append(style)
 }
-let sized = false
+let style: HTMLStyleElement | undefined
 function setSize({width, height}: Size, root: Compiler['context']['root']) {
     if (root !== undefined) {
         setShadowSize(height, root)
         return
     }
-    if (sized) {
-        return
+    if (style === undefined) {
+        style = document.createElement('style')
     }
-    sized = true
-    const style = document.createElement('style')
-    style.textContent = `${config.page ? `@media print {
-    .unit.frame>svg {
-        border: 0;
+    const css = `${config.page ? `@media print {
+        .unit.frame>svg {
+            border: 0;
+            margin: 0;
+        }
+    }
+    
+    @page {
         margin: 0;
+        size: ${width}px ${height}px;
     }
-}
-
-@page {
-    margin: 0;
-    size: ${width}px ${height}px;
-}
-
-`: ''}.unit.frame>svg>foreignObject>div {
-    height: ${height}px;
-}`
+    
+    `: ''}.unit.frame>svg>foreignObject>div {
+        height: ${height}px;
+    }`
+    if (style.textContent !== css) {
+        style.textContent = css
+    }
     document.head.append(style)
 }
 function parseSlideIndexesStr(string: string) {
@@ -366,12 +369,10 @@ function stdnToInlinePlainStringLine(stdn: STDN, compiler: Compiler) {
     }
     return []
 }
-let listened = false
 function listen(slides: SVGElement[], root: Compiler['context']['root']) {
-    if (listened || !config.listen || root !== undefined) {
+    if (!config.listen || root !== undefined) {
         return
     }
-    listened = true
     let index = 0
     const history: (number | undefined)[] = []
     let historyIndex = -1
@@ -431,7 +432,7 @@ function listen(slides: SVGElement[], root: Compiler['context']['root']) {
         go(index)
     }
     addEventListener('keydown', e => {
-        if (slides.length === 0) {
+        if (slides.length === 0 || !slides[0].isConnected) {
             return
         }
         if (e.key === 'Enter') {
@@ -467,6 +468,9 @@ function listen(slides: SVGElement[], root: Compiler['context']['root']) {
         }
     })
     addEventListener('scroll', () => {
+        if (slides.length === 0 || !slides[0].isConnected) {
+            return
+        }
         if (showing) {
             normalize()
         }
