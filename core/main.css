@@ -3,6 +3,7 @@
     border-width: 1px 0;
     display: block;
     margin: var(--length-padding) 0;
+    max-height: 100vh;
     width: 100%;
 }
 
