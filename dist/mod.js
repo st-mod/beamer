@@ -561,8 +561,7 @@ export const outline = async (unit, compiler) => {
     const pause = unit.options.pause === true;
     const ul = document.createElement('ul');
     let sul;
-    let count1 = 0;
-    let count2 = 0;
+    let count = 0;
     for (const indexInfo of compiler.context.indexInfoArray) {
         if (indexInfo.orbit !== 'heading' || indexInfo.index.length > 2) {
             continue;
@@ -575,17 +574,15 @@ export const outline = async (unit, compiler) => {
         if (indexInfo.index.length === 2) {
             if (sul !== undefined) {
                 sul.append(li);
-                count2++;
             }
             continue;
         }
         sul = document.createElement('ul');
         ul.append(li);
         li.append(sul);
-        count1++;
-        count2++;
-        if (pause && count1 > 1) {
-            li.dataset.slide = `${count1}-`;
+        count++;
+        if (pause && count > 1) {
+            li.dataset.slide = `${count}-`;
         }
     }
     return ul;

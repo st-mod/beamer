@@ -27,7 +27,7 @@
 }
 
 .unit.frame>svg>foreignObject>div>footer>div {
-    font-size: var(--length-font-log);
+    font-size: var(--length-font-code);
     text-align: center;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .unit.frame address {
-    font-size: var(--length-font-log);
+    font-size: var(--length-font-code);
 }
 
 .unit.frame .unit.author,
@@ -89,7 +89,7 @@
 }
 
 .unit.frame .unit.outline>li>ul {
-    font-size: var(--length-font-log);
+    font-size: var(--length-font-code);
 }
 
 .unit.frame .unit.pause {
