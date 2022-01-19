@@ -19,7 +19,7 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "st-std": "^0.25.4"
+    "st-std": "^0.25.5"
   },
   "engines": {
     "node": ">=14.0.0",
