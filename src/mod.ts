@@ -573,8 +573,8 @@ export const frame: UnitCompiler = async (unit, compiler) => {
 }
 export const outline: UnitCompiler = async (unit, compiler) => {
     const pause = unit.options.pause === true
-    const ul = document.createElement('ul')
-    let sul: HTMLUListElement | undefined
+    const element = document.createElement('ul')
+    let ul: HTMLUListElement | undefined
     let count = 0
     for (const indexInfo of compiler.context.indexInfoArray) {
         if (indexInfo.orbit !== 'heading' || indexInfo.index.length > 2) {
@@ -586,20 +586,20 @@ export const outline: UnitCompiler = async (unit, compiler) => {
         a.append(replaceAnchors(await compiler.compileLine(stdnToInlinePlainStringLine(indexInfo.unit.children, compiler))))
         a.href = `#${encodeURIComponent(indexInfo.id)}`
         if (indexInfo.index.length === 2) {
-            if (sul !== undefined) {
-                sul.append(li)
+            if (ul !== undefined) {
+                ul.append(li)
             }
             continue
         }
-        sul = document.createElement('ul')
-        ul.append(li)
-        li.append(sul)
+        ul = document.createElement('ul')
+        element.append(li)
+        li.append(ul)
         count++
         if (pause && count > 1) {
             li.dataset.slide = `${count}-`
         }
     }
-    return ul
+    return element
 }
 export const h0: UnitCompiler = async (unit, compiler) => {
     const element = document.createElement('h1')
