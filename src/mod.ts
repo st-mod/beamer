@@ -204,7 +204,7 @@ function parseSlideIndexesStrs(strings: string[]) {
         return []
     }
     const out = strings.map(parseSlideIndexesStr)
-    const length = Math.max(...out.map(val => val.length))
+    const length = Math.max(...out.map(value => value.length))
     if (length === 0) {
         return []
     }
@@ -304,10 +304,10 @@ function findUnit(tag: string, stdn: STDN): STDNUnit | undefined {
             if (unit.tag === tag) {
                 return unit
             }
-            for (const key of Object.keys(unit.options)) {
-                const val = unit.options[key]
-                if (typeof val === 'object') {
-                    const result = findUnit(tag, val)
+            for (const key in unit.options) {
+                const value = unit.options[key]
+                if (typeof value === 'object') {
+                    const result = findUnit(tag, value)
                     if (result !== undefined) {
                         return result
                     }
@@ -330,10 +330,10 @@ function findUnits(tag: string, stdn: STDN): STDNUnit[] {
             if (unit.tag === tag) {
                 out.push(unit)
             }
-            for (const key of Object.keys(unit.options)) {
-                const val = unit.options[key]
-                if (typeof val === 'object') {
-                    out.push(...findUnits(tag, val))
+            for (const key in unit.options) {
+                const value = unit.options[key]
+                if (typeof value === 'object') {
+                    out.push(...findUnits(tag, value))
                 }
             }
             out.push(...findUnits(tag, unit.children))
