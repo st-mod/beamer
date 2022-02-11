@@ -255,8 +255,8 @@ export function parseSlideStr(string) {
 }
 export function extractSlidableElements(parent) {
     const out = [];
-    for (const element of parent.querySelectorAll('[slide]')) {
-        const string = element.getAttribute('slide');
+    for (const element of parent.querySelectorAll('[slide], [data-slide]')) {
+        const string = element.getAttribute('slide') ?? element.getAttribute('data-slide');
         if (string === null) {
             continue;
         }

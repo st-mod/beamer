@@ -266,8 +266,8 @@ export interface SlidableElement {
 }
 export function extractSlidableElements(parent: Element) {
     const out: SlidableElement[] = []
-    for (const element of parent.querySelectorAll('[slide]')) {
-        const string = element.getAttribute('slide')
+    for (const element of parent.querySelectorAll('[slide], [data-slide]')) {
+        const string = element.getAttribute('slide') ?? element.getAttribute('data-slide')
         if (string === null) {
             continue
         }
