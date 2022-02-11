@@ -255,8 +255,8 @@ export function parseSlideStr(string) {
 }
 export function extractSlidableElements(parent) {
     const out = [];
-    for (const element of parent.querySelectorAll('[data-slide]')) {
-        const string = element.getAttribute('data-slide');
+    for (const element of parent.querySelectorAll('[slide]')) {
+        const string = element.getAttribute('slide');
         if (string === null) {
             continue;
         }
@@ -582,7 +582,7 @@ export const outline = async (unit, compiler) => {
         li.append(ul);
         count++;
         if (pause && count > 1) {
-            li.dataset.slide = `${count}-`;
+            li.setAttribute('slide', `${count}-`);
         }
     }
     return element;
