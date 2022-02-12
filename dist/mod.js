@@ -446,7 +446,7 @@ function listen(slides, root) {
         }
     });
 }
-const compilerToEnv = new Map();
+export const compilerToEnv = new Map();
 export const frame = async (unit, compiler) => {
     let env = compilerToEnv.get(compiler);
     if (env === undefined) {

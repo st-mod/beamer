@@ -466,7 +466,7 @@ interface Env {
     date?: STDNUnit
     page: number
 }
-const compilerToEnv = new Map<Compiler, Env | undefined>()
+export const compilerToEnv = new Map<Compiler, Env | undefined>()
 export const frame: UnitCompiler = async (unit, compiler) => {
     let env = compilerToEnv.get(compiler)
     if (env === undefined) {
