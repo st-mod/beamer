@@ -21,7 +21,7 @@ html.showing>body>.lr-struct>button {
 }
 
 body>.lr-struct>main {
-    margin-left: 0 !important;
+    margin-left: 0;
 }
 
 body>.lr-struct>main>article {
