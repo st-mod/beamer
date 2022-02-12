@@ -281,20 +281,6 @@ export function extractSlidableElements(parent: Element) {
     }
     return out
 }
-function removeAfter(node: Node, parent: Node) {
-    while (true) {
-        while (true) {
-            if (node.nextSibling === null) {
-                break
-            }
-            node.nextSibling.remove()
-        }
-        if (node.parentNode === null || node.parentNode === parent) {
-            break
-        }
-        node = node.parentNode
-    }
-}
 function findUnit(tag: string, stdn: STDN): STDNUnit | undefined {
     for (const line of stdn) {
         for (const unit of line) {
@@ -340,15 +326,6 @@ function findUnits(tag: string, stdn: STDN): STDNUnit[] {
         }
     }
     return out
-}
-function stdnToInlinePlainStringLine(stdn: STDN, compiler: Compiler) {
-    for (const line of stdn) {
-        const string = compiler.base.lineToInlinePlainString(line)
-        if (string.length > 0) {
-            return line
-        }
-    }
-    return []
 }
 function listen(slides: SVGElement[], root: Compiler['context']['root']) {
     if (!config.listen || root !== undefined) {
@@ -526,9 +503,9 @@ export const frame: UnitCompiler = async (unit, compiler) => {
             if (typeof abbr === 'string') {
                 span.append(new Text(abbr))
             } else if (typeof abbr === 'object') {
-                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)))
+                span.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)))
             } else {
-                span.append(await compiler.compileLine(stdnToInlinePlainStringLine(unit.children, compiler)))
+                span.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children)))
             }
             authorEle.append(span)
         }
@@ -537,9 +514,9 @@ export const frame: UnitCompiler = async (unit, compiler) => {
             if (typeof abbr === 'string') {
                 titleEle.append(new Text(abbr))
             } else if (typeof abbr === 'object') {
-                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)))
+                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)))
             } else {
-                titleEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(env.title.children, compiler)))
+                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.title.children)))
             }
         }
         if (env.date !== undefined) {
@@ -547,16 +524,16 @@ export const frame: UnitCompiler = async (unit, compiler) => {
             if (typeof abbr === 'string') {
                 dateEle.append(new Text(abbr))
             } else if (typeof abbr === 'object') {
-                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(abbr, compiler)))
+                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)))
             } else {
-                dateEle.append(await compiler.compileLine(stdnToInlinePlainStringLine(env.date.children, compiler)))
+                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.children)))
             }
         }
         pageEle.textContent = env.page.toString()
         let more = false
         const pause = main.querySelectorAll('.unit.pause')[i]
         if (pause !== undefined) {
-            removeAfter(pause, main)
+            compiler.base.removeAfter(pause, main)
             more = true
         }
         for (const {element, classesArray} of extractSlidableElements(main)) {
@@ -583,7 +560,7 @@ export const outline: UnitCompiler = async (unit, compiler) => {
         const li = document.createElement('li')
         const a = document.createElement('a')
         li.append(a)
-        a.append(replaceAnchors(await compiler.compileLine(stdnToInlinePlainStringLine(indexInfo.unit.children, compiler))))
+        a.append(replaceAnchors(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(indexInfo.unit.children))))
         a.href = `#${encodeURIComponent(indexInfo.id)}`
         if (indexInfo.index.length === 2) {
             if (ul !== undefined) {

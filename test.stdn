@@ -1,4 +1,4 @@
-{mod demo@0.11.1, global []}
+{mod demo@0.11.2, global []}
 {css-src main.css, ucs-src ucs.js, global []}
 {css-src test.css, global []}
 {global, no-count-inside, demo []}
