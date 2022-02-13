@@ -427,7 +427,7 @@ export const compilerToEnv = new Map();
 export const frame = async (unit, compiler) => {
     let env = compilerToEnv.get(compiler);
     if (env === undefined) {
-        const size = parseSize(compiler.extractor.extractLastGlobalOption('size', 'frame', compiler.context.tagToGlobalOptions));
+        const size = parseSize(compiler.context.extractLastGlobalOption('size', 'frame'));
         compilerToEnv.set(compiler, env = {
             width: size.width,
             height: size.height,
