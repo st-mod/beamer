@@ -16,15 +16,14 @@ export interface SlidableElement {
     classesArray: string[][];
 }
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
-interface Env {
-    readonly width: number;
-    readonly height: number;
-    readonly slides: SVGElement[];
-    readonly authors: IndexInfo[];
-    readonly date: IndexInfo | undefined;
+export declare const compilerToEnv: Map<Compiler, {
+    authors: IndexInfo[];
+    date: IndexInfo | undefined;
+    height: number;
     page: number;
-}
-export declare const compilerToEnv: Map<Compiler, Env | undefined>;
+    slides: SVGSVGElement[];
+    width: number;
+} | undefined>;
 export declare const frame: UnitCompiler;
 export declare const outline: UnitCompiler;
 export declare const h0: UnitCompiler;

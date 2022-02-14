@@ -377,19 +377,23 @@ function listen(slides, root) {
         }
     });
 }
+function createEnv({ height, width }, indexInfoArray) {
+    const slides = [];
+    return {
+        authors: indexInfoArray.filter(value => value.unit.tag === 'author'),
+        date: indexInfoArray.find(value => value.unit.tag === 'date'),
+        height,
+        page: 0,
+        slides,
+        width
+    };
+}
 export const compilerToEnv = new Map();
 export const frame = async (unit, compiler) => {
     let env = compilerToEnv.get(compiler);
     if (env === undefined) {
         const size = parseSize(compiler.context.extractLastGlobalOption('size', 'frame'));
-        compilerToEnv.set(compiler, env = {
-            width: size.width,
-            height: size.height,
-            slides: [],
-            authors: compiler.context.indexInfoArray.filter(value => value.unit.tag === 'author'),
-            date: compiler.context.indexInfoArray.find(value => value.unit.tag === 'date'),
-            page: 0
-        });
+        compilerToEnv.set(compiler, env = createEnv(size, compiler.context.indexInfoArray));
         setSize(size, compiler.context.root);
         listen(env.slides, compiler.context.root);
     }
