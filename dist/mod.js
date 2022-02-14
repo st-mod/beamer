@@ -548,16 +548,16 @@ export const outline = async (unit, compiler) => {
     const element = document.createElement('ul');
     let ul;
     let count = 0;
-    for (const indexInfo of compiler.context.indexInfoArray) {
-        if (indexInfo.orbit !== 'heading' || indexInfo.index.length > 2) {
+    for (const { id, index, unit } of compiler.context.headings) {
+        if (index.length > 2) {
             continue;
         }
         const li = document.createElement('li');
         const a = document.createElement('a');
         li.append(a);
-        a.append(replaceAnchors(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(indexInfo.unit.children))));
-        a.href = `#${encodeURIComponent(indexInfo.id)}`;
-        if (indexInfo.index.length === 2) {
+        a.append(replaceAnchors(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children))));
+        a.href = `#${encodeURIComponent(id)}`;
+        if (index.length === 2) {
             if (ul !== undefined) {
                 ul.append(li);
             }
