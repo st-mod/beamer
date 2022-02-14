@@ -270,61 +270,6 @@ export function extractSlidableElements(parent) {
     }
     return out;
 }
-function findUnitFromUnit(tag, unit) {
-    if (unit.tag === tag) {
-        return unit;
-    }
-    for (const key in unit.options) {
-        const value = unit.options[key];
-        if (typeof value === 'object') {
-            const result = findUnitFromUnit(tag, value);
-            if (result !== undefined) {
-                return result;
-            }
-        }
-    }
-    const result = findUnit(tag, unit.children);
-    if (result !== undefined) {
-        return result;
-    }
-}
-function findUnit(tag, stdn) {
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'object') {
-                const result = findUnitFromUnit(tag, unit);
-                if (result !== undefined) {
-                    return result;
-                }
-            }
-        }
-    }
-}
-function findUnitsFromUnit(tag, unit) {
-    const out = [];
-    if (unit.tag === tag) {
-        out.push(unit);
-    }
-    for (const key in unit.options) {
-        const value = unit.options[key];
-        if (typeof value === 'object') {
-            out.push(...findUnitsFromUnit(tag, value));
-        }
-    }
-    out.push(...findUnits(tag, unit.children));
-    return out;
-}
-function findUnits(tag, stdn) {
-    const out = [];
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'object') {
-                out.push(...findUnitsFromUnit(tag, unit));
-            }
-        }
-    }
-    return out;
-}
 function listen(slides, root) {
     if (!config.listen || root !== undefined) {
         return;
@@ -441,23 +386,12 @@ export const frame = async (unit, compiler) => {
             width: size.width,
             height: size.height,
             slides: [],
-            author: [],
+            authors: compiler.context.indexInfoArray.filter(value => value.unit.tag === 'author'),
+            date: compiler.context.indexInfoArray.find(value => value.unit.tag === 'date'),
             page: 0
         });
         setSize(size, compiler.context.root);
         listen(env.slides, compiler.context.root);
-    }
-    const titleUnit = findUnit('title', unit.children);
-    if (titleUnit !== undefined) {
-        env.title = titleUnit;
-    }
-    const authorUnits = findUnits('author', unit.children);
-    if (authorUnits.length > 0) {
-        env.author = authorUnits;
-    }
-    const dateUnit = findUnit('date', unit.children);
-    if (dateUnit !== undefined) {
-        env.date = dateUnit;
     }
     env.page++;
     const element = document.createElement('div');
@@ -486,7 +420,7 @@ export const frame = async (unit, compiler) => {
         footer.append(dateEle);
         footer.append(pageEle);
         env.slides.push(slide);
-        for (const unit of env.author) {
+        for (const { unit } of env.authors) {
             const span = document.createElement('span');
             const { abbr } = unit.options;
             if (typeof abbr === 'string') {
@@ -500,8 +434,8 @@ export const frame = async (unit, compiler) => {
             }
             authorEle.append(span);
         }
-        if (env.title !== undefined) {
-            const { abbr } = env.title.options;
+        if (compiler.context.titleInfo !== undefined) {
+            const { abbr } = compiler.context.titleInfo.unit.options;
             if (typeof abbr === 'string') {
                 titleEle.append(new Text(abbr));
             }
@@ -509,11 +443,11 @@ export const frame = async (unit, compiler) => {
                 titleEle.append(await compiler.compileUnit(abbr));
             }
             else {
-                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.title.children)));
+                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(compiler.context.titleInfo.unit.children)));
             }
         }
         if (env.date !== undefined) {
-            const { abbr } = env.date.options;
+            const { abbr } = env.date.unit.options;
             if (typeof abbr === 'string') {
                 dateEle.append(new Text(abbr));
             }
@@ -521,7 +455,7 @@ export const frame = async (unit, compiler) => {
                 dateEle.append(await compiler.compileUnit(abbr));
             }
             else {
-                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.children)));
+                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.unit.children)));
             }
         }
         pageEle.textContent = env.page.toString();

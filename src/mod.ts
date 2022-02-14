@@ -1,5 +1,5 @@
-import type {STDN, STDNUnit, STDNUnitOptions} from 'stdn'
-import type {Compiler, UnitCompiler} from '@ddu6/stc'
+import type {STDNUnitOptions} from 'stdn'
+import type {Compiler, IndexInfo, UnitCompiler} from '@ddu6/stc'
 import {replaceAnchors} from 'st-std/dist/common'
 export const config = {
     listen: false,
@@ -144,7 +144,7 @@ export function parseSize(option: STDNUnitOptions[string]): Size {
     }
 }
 let style: HTMLStyleElement | undefined
-function setSize({width, height}: Size, root: Compiler['context']['root']) {
+function setSize({width, height}: Size, root: ShadowRoot | undefined) {
     if (root !== undefined || !config.page) {
         return
     }
@@ -281,62 +281,7 @@ export function extractSlidableElements(parent: Element) {
     }
     return out
 }
-function findUnitFromUnit(tag: string, unit: STDNUnit): STDNUnit | undefined {
-    if (unit.tag === tag) {
-        return unit
-    }
-    for (const key in unit.options) {
-        const value = unit.options[key]
-        if (typeof value === 'object') {
-            const result = findUnitFromUnit(tag, value)
-            if (result !== undefined) {
-                return result
-            }
-        }
-    }
-    const result = findUnit(tag, unit.children)
-    if (result !== undefined) {
-        return result
-    }
-}
-function findUnit(tag: string, stdn: STDN): STDNUnit | undefined {
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'object') {
-                const result = findUnitFromUnit(tag, unit)
-                if (result !== undefined) {
-                    return result
-                }
-            }
-        }
-    }
-}
-function findUnitsFromUnit(tag: string, unit: STDNUnit): STDNUnit[] {
-    const out: STDNUnit[] = []
-    if (unit.tag === tag) {
-        out.push(unit)
-    }
-    for (const key in unit.options) {
-        const value = unit.options[key]
-        if (typeof value === 'object') {
-            out.push(...findUnitsFromUnit(tag, value))
-        }
-    }
-    out.push(...findUnits(tag, unit.children))
-    return out
-}
-function findUnits(tag: string, stdn: STDN): STDNUnit[] {
-    const out: STDNUnit[] = []
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'object') {
-                out.push(...findUnitsFromUnit(tag, unit))
-            }
-        }
-    }
-    return out
-}
-function listen(slides: SVGElement[], root: Compiler['context']['root']) {
+function listen(slides: SVGElement[], root: ShadowRoot | undefined) {
     if (!config.listen || root !== undefined) {
         return
     }
@@ -447,9 +392,8 @@ interface Env {
     readonly width: number
     readonly height: number
     readonly slides: SVGElement[]
-    title?: STDNUnit
-    author: STDNUnit[]
-    date?: STDNUnit
+    readonly authors: IndexInfo[]
+    readonly date: IndexInfo | undefined
     page: number
 }
 export const compilerToEnv = new Map<Compiler, Env | undefined>()
@@ -461,23 +405,12 @@ export const frame: UnitCompiler = async (unit, compiler) => {
             width: size.width,
             height: size.height,
             slides: [],
-            author: [],
+            authors: compiler.context.indexInfoArray.filter(value => value.unit.tag === 'author'),
+            date: compiler.context.indexInfoArray.find(value => value.unit.tag === 'date'),
             page: 0
         })
         setSize(size, compiler.context.root)
         listen(env.slides, compiler.context.root)
-    }
-    const titleUnit = findUnit('title', unit.children)
-    if (titleUnit !== undefined) {
-        env.title = titleUnit
-    }
-    const authorUnits = findUnits('author', unit.children)
-    if (authorUnits.length > 0) {
-        env.author = authorUnits
-    }
-    const dateUnit = findUnit('date', unit.children)
-    if (dateUnit !== undefined) {
-        env.date = dateUnit
     }
     env.page++
     const element = document.createElement('div')
@@ -506,7 +439,7 @@ export const frame: UnitCompiler = async (unit, compiler) => {
         footer.append(dateEle)
         footer.append(pageEle)
         env.slides.push(slide)
-        for (const unit of env.author) {
+        for (const {unit} of env.authors) {
             const span = document.createElement('span')
             const {abbr} = unit.options
             if (typeof abbr === 'string') {
@@ -518,24 +451,24 @@ export const frame: UnitCompiler = async (unit, compiler) => {
             }
             authorEle.append(span)
         }
-        if (env.title !== undefined) {
-            const {abbr} = env.title.options
+        if (compiler.context.titleInfo !== undefined) {
+            const {abbr} = compiler.context.titleInfo.unit.options
             if (typeof abbr === 'string') {
                 titleEle.append(new Text(abbr))
             } else if (typeof abbr === 'object') {
                 titleEle.append(await compiler.compileUnit(abbr))
             } else {
-                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.title.children)))
+                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(compiler.context.titleInfo.unit.children)))
             }
         }
         if (env.date !== undefined) {
-            const {abbr} = env.date.options
+            const {abbr} = env.date.unit.options
             if (typeof abbr === 'string') {
                 dateEle.append(new Text(abbr))
             } else if (typeof abbr === 'object') {
                 dateEle.append(await compiler.compileUnit(abbr))
             } else {
-                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.children)))
+                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.unit.children)))
             }
         }
         pageEle.textContent = env.page.toString()

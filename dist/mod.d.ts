@@ -1,5 +1,5 @@
-import type { STDNUnit, STDNUnitOptions } from 'stdn';
-import type { Compiler, UnitCompiler } from '@ddu6/stc';
+import type { STDNUnitOptions } from 'stdn';
+import type { Compiler, IndexInfo, UnitCompiler } from '@ddu6/stc';
 export declare const config: {
     listen: boolean;
     page: boolean;
@@ -20,9 +20,8 @@ interface Env {
     readonly width: number;
     readonly height: number;
     readonly slides: SVGElement[];
-    title?: STDNUnit;
-    author: STDNUnit[];
-    date?: STDNUnit;
+    readonly authors: IndexInfo[];
+    readonly date: IndexInfo | undefined;
     page: number;
 }
 export declare const compilerToEnv: Map<Compiler, Env | undefined>;
