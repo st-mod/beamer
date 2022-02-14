@@ -1,5 +1,5 @@
 import type {STDNUnitOptions} from 'stdn'
-import type {Compiler, IndexInfo, UnitCompiler} from '@ddu6/stc'
+import type {Compiler, Context, IndexInfo, UnitCompiler} from '@ddu6/stc'
 import {replaceAnchors} from 'st-std/dist/common'
 export const config = {
     listen: false,
@@ -388,24 +388,23 @@ function listen(slides: SVGElement[], root: ShadowRoot | undefined) {
         }
     })
 }
-function createEnv({height, width}: Size, indexInfoArray: IndexInfo[]) {
+function createEnv(context: Context) {
+    const size = parseSize(context.extractLastGlobalOption('size', 'frame'))
     const slides: SVGSVGElement[] = []
     return {
-        authors: indexInfoArray.filter(value => value.unit.tag === 'author'),
-        date: indexInfoArray.find(value => value.unit.tag === 'date'),
-        height,
+        authors: context.indexInfoArray.filter(value => value.unit.tag === 'author'),
+        date: context.indexInfoArray.find(value => value.unit.tag === 'date'),
         page: 0,
-        slides,
-        width
+        size,
+        slides
     }
 }
 export const compilerToEnv = new Map<Compiler, ReturnType<typeof createEnv> | undefined>()
 export const frame: UnitCompiler = async (unit, compiler) => {
     let env = compilerToEnv.get(compiler)
     if (env === undefined) {
-        const size = parseSize(compiler.context.extractLastGlobalOption('size', 'frame'))
-        compilerToEnv.set(compiler, env = createEnv(size, compiler.context.indexInfoArray))
-        setSize(size, compiler.context.root)
+        compilerToEnv.set(compiler, env = createEnv(compiler.context))
+        setSize(env.size, compiler.context.root)
         listen(env.slides, compiler.context.root)
     }
     env.page++
@@ -420,10 +419,10 @@ export const frame: UnitCompiler = async (unit, compiler) => {
         const titleEle = document.createElement('div')
         const dateEle = document.createElement('div')
         const pageEle = document.createElement('div')
-        slide.setAttribute('viewBox', `0 0 ${env.width} ${env.height}`)
+        slide.setAttribute('viewBox', `0 0 ${env.size.width} ${env.size.height}`)
         fo.setAttribute('width', '100%')
         fo.setAttribute('height', '100%')
-        container.style.height = `${env.height}px`
+        container.style.height = `${env.size.height}px`
         element.append(slide)
         slide.append(fo)
         fo.append(container)

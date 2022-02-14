@@ -19,10 +19,9 @@ export declare function extractSlidableElements(parent: Element): SlidableElemen
 export declare const compilerToEnv: Map<Compiler, {
     authors: IndexInfo[];
     date: IndexInfo | undefined;
-    height: number;
     page: number;
+    size: Size;
     slides: SVGSVGElement[];
-    width: number;
 } | undefined>;
 export declare const frame: UnitCompiler;
 export declare const outline: UnitCompiler;
