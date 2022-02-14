@@ -270,48 +270,57 @@ export function extractSlidableElements(parent) {
     }
     return out;
 }
-function findUnit(tag, stdn) {
-    for (const line of stdn) {
-        for (const unit of line) {
-            if (typeof unit === 'string') {
-                continue;
-            }
-            if (unit.tag === tag) {
-                return unit;
-            }
-            for (const key in unit.options) {
-                const value = unit.options[key];
-                if (typeof value === 'object') {
-                    const result = findUnit(tag, value);
-                    if (result !== undefined) {
-                        return result;
-                    }
-                }
-            }
-            const result = findUnit(tag, unit.children);
+function findUnitFromUnit(tag, unit) {
+    if (unit.tag === tag) {
+        return unit;
+    }
+    for (const key in unit.options) {
+        const value = unit.options[key];
+        if (typeof value === 'object') {
+            const result = findUnitFromUnit(tag, value);
             if (result !== undefined) {
                 return result;
             }
         }
     }
+    const result = findUnit(tag, unit.children);
+    if (result !== undefined) {
+        return result;
+    }
+}
+function findUnit(tag, stdn) {
+    for (const line of stdn) {
+        for (const unit of line) {
+            if (typeof unit === 'object') {
+                const result = findUnitFromUnit(tag, unit);
+                if (result !== undefined) {
+                    return result;
+                }
+            }
+        }
+    }
+}
+function findUnitsFromUnit(tag, unit) {
+    const out = [];
+    if (unit.tag === tag) {
+        out.push(unit);
+    }
+    for (const key in unit.options) {
+        const value = unit.options[key];
+        if (typeof value === 'object') {
+            out.push(...findUnitsFromUnit(tag, value));
+        }
+    }
+    out.push(...findUnits(tag, unit.children));
+    return out;
 }
 function findUnits(tag, stdn) {
     const out = [];
     for (const line of stdn) {
         for (const unit of line) {
-            if (typeof unit === 'string') {
-                continue;
+            if (typeof unit === 'object') {
+                out.push(...findUnitsFromUnit(tag, unit));
             }
-            if (unit.tag === tag) {
-                out.push(unit);
-            }
-            for (const key in unit.options) {
-                const value = unit.options[key];
-                if (typeof value === 'object') {
-                    out.push(...findUnits(tag, value));
-                }
-            }
-            out.push(...findUnits(tag, unit.children));
         }
     }
     return out;
@@ -484,7 +493,7 @@ export const frame = async (unit, compiler) => {
                 span.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                span.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)));
+                span.append(await compiler.compileUnit(abbr));
             }
             else {
                 span.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children)));
@@ -497,7 +506,7 @@ export const frame = async (unit, compiler) => {
                 titleEle.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)));
+                titleEle.append(await compiler.compileUnit(abbr));
             }
             else {
                 titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.title.children)));
@@ -509,7 +518,7 @@ export const frame = async (unit, compiler) => {
                 dateEle.append(new Text(abbr));
             }
             else if (typeof abbr === 'object') {
-                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(abbr)));
+                dateEle.append(await compiler.compileUnit(abbr));
             }
             else {
                 dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.children)));
@@ -519,7 +528,7 @@ export const frame = async (unit, compiler) => {
         let more = false;
         const pause = main.querySelectorAll('.unit.pause')[i];
         if (pause !== undefined) {
-            compiler.base.removeAfter(pause, main);
+            compiler.dom.removeAfter(pause, main);
             more = true;
         }
         for (const { element, classesArray } of extractSlidableElements(main)) {
