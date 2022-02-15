@@ -1,5 +1,5 @@
 import type { STDNUnitOptions } from 'stdn';
-import type { Compiler, IndexInfo, UnitCompiler } from '@ddu6/stc';
+import type { Compiler, UnitCompiler } from '@ddu6/stc';
 export declare const config: {
     listen: boolean;
     page: boolean;
@@ -17,8 +17,8 @@ export interface SlidableElement {
 }
 export declare function extractSlidableElements(parent: Element): SlidableElement[];
 export declare const compilerToEnv: Map<Compiler, {
-    authors: IndexInfo[];
-    date: IndexInfo | undefined;
+    authors: import("@ddu6/stc").IndexInfo[];
+    date: import("@ddu6/stc").IndexInfo | undefined;
     page: number;
     size: Size;
     slides: SVGSVGElement[];

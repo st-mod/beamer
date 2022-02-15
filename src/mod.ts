@@ -1,5 +1,5 @@
 import type {STDNUnitOptions} from 'stdn'
-import type {Compiler, Context, IndexInfo, UnitCompiler} from '@ddu6/stc'
+import type {Compiler, Context, UnitCompiler} from '@ddu6/stc'
 import {replaceAnchors} from 'st-std/dist/common'
 export const config = {
     listen: false,
