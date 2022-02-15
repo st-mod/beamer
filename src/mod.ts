@@ -389,13 +389,12 @@ function listen(slides: SVGElement[], root: ShadowRoot | undefined) {
     })
 }
 function createEnv(context: Context) {
-    const size = parseSize(context.extractLastGlobalOption('size', 'frame'))
     const slides: SVGSVGElement[] = []
     return {
         authors: context.indexInfoArray.filter(value => value.unit.tag === 'author'),
         date: context.indexInfoArray.find(value => value.unit.tag === 'date'),
         page: 0,
-        size,
+        size: parseSize(context.extractLastGlobalOption('size', 'frame')),
         slides
     }
 }

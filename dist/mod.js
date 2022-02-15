@@ -378,13 +378,12 @@ function listen(slides, root) {
     });
 }
 function createEnv(context) {
-    const size = parseSize(context.extractLastGlobalOption('size', 'frame'));
     const slides = [];
     return {
         authors: context.indexInfoArray.filter(value => value.unit.tag === 'author'),
         date: context.indexInfoArray.find(value => value.unit.tag === 'date'),
         page: 0,
-        size,
+        size: parseSize(context.extractLastGlobalOption('size', 'frame')),
         slides
     };
 }
