@@ -426,7 +426,7 @@ export const frame = async (unit, compiler) => {
             const span = document.createElement('span');
             const { abbr } = unit.options;
             if (typeof abbr === 'string') {
-                span.append(new Text(abbr));
+                span.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
                 span.append(await compiler.compileUnit(abbr));
@@ -439,7 +439,7 @@ export const frame = async (unit, compiler) => {
         if (compiler.context.titleInfo !== undefined) {
             const { abbr } = compiler.context.titleInfo.unit.options;
             if (typeof abbr === 'string') {
-                titleEle.append(new Text(abbr));
+                titleEle.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
                 titleEle.append(await compiler.compileUnit(abbr));
@@ -451,7 +451,7 @@ export const frame = async (unit, compiler) => {
         if (env.date !== undefined) {
             const { abbr } = env.date.unit.options;
             if (typeof abbr === 'string') {
-                dateEle.append(new Text(abbr));
+                dateEle.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
                 dateEle.append(await compiler.compileUnit(abbr));
