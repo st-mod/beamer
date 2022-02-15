@@ -87,7 +87,7 @@
     {h3 [Some Observation]}
     ['If '{'\Re{s}>1'}{pause []}', then']
     {align [
-        ['\zeta(s)&=\sum_{n=1}^\infty\frac1{n^s}'\\]
+        '\zeta(s)&=\sum_{n=1}^\infty\frac1{n^s}\\\\'
         '&\htmlData{slide=4-}{=\prod_p\frac1{1-p^{-s}}.}'
     ]}
     {pause []}
