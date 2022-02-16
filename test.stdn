@@ -60,7 +60,7 @@
             {slide warn 1, li [['Suppose '{'p'}' were the largest prime number.']]}
             {slide 2-, li [['Let '{'q'}' be the product of the first '{'p'}' numbers.']]}
             {slide 3-, li [['Then '{'q+1'}' is not divisible by any of them.']]}
-            {li [['But '{'q+1'}' is '{slide ^hide 4-, span [['greater than '{'1'}', thus ']]}'divisible by some prime number not in the first '{'p'}' numbers.'{slide 4-, qed []}]]}
+            {li [['But '{'q+1'}' is '{slide ^hide 4-, span [['greater than '{'1,'}' thus ']]}'divisible by some prime number not in the first '{'p'}' numbers.'{slide 4-, qed []}]]}
         ]}
     ]}
     []
@@ -81,7 +81,7 @@
 {global, '\def\Re#1{\operatorname{Re}\left(#1\right)}'}
 {frame [
     {h2 [Another Open Question]}
-    ['In complex plane, define '{'\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}'}'. Then, are all zeros of '{'\zeta'}' in the strip '{'0\leq\Re{s}\leq1'}' lie on the line '{'\Re{s}=\frac12'}?]
+    ['In complex plane, define '{'\zeta(s)=\sum\limits_{n=1}^\infty\frac1{n^s}.'}' Then, are all zeros of '{'\zeta'}' in the strip '{'0\leq\Re{s}\leq1'}' lie on the line '{'\Re{s}=\frac12'}?]
     {pause []}
     []
     {h3 [Some Observation]}
