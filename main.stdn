@@ -4,7 +4,7 @@ This is a stdn module for creating slides.
 []
 {h1 [Quick Start]}
 {ol [
-    {li [['View '{src test.stdn, a [test.stdn]}.]]}
+    {li [['View '{src test/main.stdn, a []}.]]}
     {li [['Press '{kbd [Enter]}.]]}
     {li [['Press '{kbd [Page Down]}.]]}
     {li [['Press '{kbd [Arrow Up]}.]]}
