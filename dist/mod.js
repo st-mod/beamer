@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { replaceAnchors } from 'st-std/dist/common';
 export const config = {
     listen: false,
@@ -254,9 +263,10 @@ export function parseSlideStr(string) {
     return classesArray;
 }
 export function extractSlidableElements(parent) {
+    var _a;
     const out = [];
     for (const element of parent.querySelectorAll('[slide], [data-slide]')) {
-        const string = element.getAttribute('slide') ?? element.getAttribute('data-slide');
+        const string = (_a = element.getAttribute('slide')) !== null && _a !== void 0 ? _a : element.getAttribute('data-slide');
         if (string === null) {
             continue;
         }
@@ -388,7 +398,7 @@ function createEnv(context) {
     };
 }
 export const compilerToEnv = new Map();
-export const frame = async (unit, compiler) => {
+export const frame = (unit, compiler) => __awaiter(void 0, void 0, void 0, function* () {
     let env = compilerToEnv.get(compiler);
     if (env === undefined) {
         compilerToEnv.set(compiler, env = createEnv(compiler.context));
@@ -416,7 +426,7 @@ export const frame = async (unit, compiler) => {
         fo.append(container);
         container.append(main);
         container.append(footer);
-        main.append(await compiler.compileSTDN(unit.children));
+        main.append(yield compiler.compileSTDN(unit.children));
         footer.append(authorEle);
         footer.append(titleEle);
         footer.append(dateEle);
@@ -429,10 +439,10 @@ export const frame = async (unit, compiler) => {
                 span.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
-                span.append(await compiler.compileUnit(abbr));
+                span.append(yield compiler.compileUnit(abbr));
             }
             else {
-                span.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children)));
+                span.append(yield compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children)));
             }
             authorEle.append(span);
         }
@@ -442,10 +452,10 @@ export const frame = async (unit, compiler) => {
                 titleEle.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
-                titleEle.append(await compiler.compileUnit(abbr));
+                titleEle.append(yield compiler.compileUnit(abbr));
             }
             else {
-                titleEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(compiler.context.titleInfo.unit.children)));
+                titleEle.append(yield compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(compiler.context.titleInfo.unit.children)));
             }
         }
         if (env.date !== undefined) {
@@ -454,10 +464,10 @@ export const frame = async (unit, compiler) => {
                 dateEle.textContent = abbr;
             }
             else if (typeof abbr === 'object') {
-                dateEle.append(await compiler.compileUnit(abbr));
+                dateEle.append(yield compiler.compileUnit(abbr));
             }
             else {
-                dateEle.append(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.unit.children)));
+                dateEle.append(yield compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(env.date.unit.children)));
             }
         }
         pageEle.textContent = env.page.toString();
@@ -478,8 +488,8 @@ export const frame = async (unit, compiler) => {
         }
     }
     return element;
-};
-export const outline = async (unit, compiler) => {
+});
+export const outline = (unit, compiler) => __awaiter(void 0, void 0, void 0, function* () {
     const pause = unit.options.pause === true;
     const element = document.createElement('ul');
     let ul;
@@ -491,7 +501,7 @@ export const outline = async (unit, compiler) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
         li.append(a);
-        a.append(replaceAnchors(await compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children))));
+        a.append(replaceAnchors(yield compiler.compileLine(compiler.base.stdnToInlinePlainStringLine(unit.children))));
         a.href = `#${encodeURIComponent(id)}`;
         if (index.length === 2) {
             if (ul !== undefined) {
@@ -508,9 +518,9 @@ export const outline = async (unit, compiler) => {
         }
     }
     return element;
-};
-export const h0 = async (unit, compiler) => {
+});
+export const h0 = (unit, compiler) => __awaiter(void 0, void 0, void 0, function* () {
     const element = document.createElement('h1');
-    element.append(await compiler.compileSTDN(unit.children));
+    element.append(yield compiler.compileSTDN(unit.children));
     return element;
-};
+});
