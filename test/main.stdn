@@ -1,4 +1,4 @@
-{mod demo@0.12.8, global []}
+{mod demo@main, global []}
 {registry .., mod .., global []}
 {css-src main.css, global []}
 {global, no-count-inside, demo []}

@@ -1,5 +1,5 @@
 {title [Beamer]}
-{ucs cfr, global []}
+{ucs cfr@main, global []}
 This is a stdn module for creating slides.
 []
 {h1 [Quick Start]}
